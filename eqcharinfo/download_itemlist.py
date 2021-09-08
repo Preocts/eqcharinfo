@@ -1,25 +1,37 @@
+"""
+Downloads and maintains existing downloads (cleanup) of Lucy's itemlist
+"""
 import gzip
-import logging
-import pathlib
+import os
 from datetime import datetime
+from datetime import timedelta
+from pathlib import Path
 
 import requests
 
-DOWNLOAD_LINK = "https://lucy.allakhazam.com/itemlist.txt.gz"
-DOWNLOAD_TARGET = pathlib.Path(__file__).parent.parent / "itemlists"
-FILE = DOWNLOAD_TARGET / datetime.now().strftime("itemlist-%Y.%m.%d.txt.gz")
+from eqcharinfo.utils import runtime_loader
 
-log = logging.getLogger(__name__)
+log = runtime_loader.set_logger(__name__)
+
+CONFIG = runtime_loader.load_config()["DOWNLOAD-ITEMFILE"]
+DOWNLOAD_PATH = (Path(__file__).parent / CONFIG.get("download_path")).resolve()
+DOWNLOAD_URL = CONFIG["url"]
+FILE_PATH = (DOWNLOAD_PATH / datetime.now().strftime(CONFIG.get("filename"))).resolve()
 
 
 def housekeeping() -> None:
     """Housekeeping to ensure directories and paths exist, cleans up extra backups"""
-    DOWNLOAD_TARGET.mkdir(exist_ok=True)
 
-    # TODO: Clean up extra backups
+    DOWNLOAD_PATH.mkdir(exist_ok=True)
+    expiry = datetime.now() - timedelta(days=CONFIG.getint("keep_for_days"))
+
+    for file in DOWNLOAD_PATH.glob("*txt.gz"):
+        created = datetime.fromtimestamp(os.path.getctime(file))
+        if expiry > created:
+            os.remove(file)
 
 
-def download_itemlist(url: str, filepath: pathlib.Path) -> None:
+def download_itemlist(url: str, filepath: Path) -> None:
     """Downloads the Lucy itemlist, saves to given filepath"""
 
     if filepath.exists():
@@ -37,7 +49,7 @@ def download_itemlist(url: str, filepath: pathlib.Path) -> None:
     log.info("File saved as '%s'", filepath)
 
 
-def unpack_itemlist(filepath: pathlib.Path) -> None:
+def unpack_itemlist(filepath: Path) -> None:
     """Decompress the gzip of a given itemlist, will be saved in same path"""
 
     newfile = filepath.with_suffix("")
@@ -54,13 +66,11 @@ def main() -> int:
     """Point of entry"""
 
     housekeeping()
-    download_itemlist(DOWNLOAD_LINK, FILE)
-    unpack_itemlist(FILE)
+    download_itemlist(DOWNLOAD_URL, FILE_PATH)
+    unpack_itemlist(FILE_PATH)
 
     return 0
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level="DEBUG")
-    log.debug("Launched directly, are you testing?")
     raise SystemExit(main())

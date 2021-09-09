@@ -60,14 +60,6 @@ def test_download_file(mockfile: pathlib.Path, caplog: Any) -> None:
 def test_unpack_file(mockgz: pathlib.Path) -> None:
     """Unpack the fixture gzip"""
 
-    try:
-        download_itemlist.unpack_itemlist(mockgz)
-        assert mockgz.with_suffix("").exists()
+    body = download_itemlist.unpack_itemlist(mockgz)
 
-        body = open(mockgz.with_suffix(""), "r").read()
-
-        assert MOCK_GZ_BODY in body
-
-    finally:
-
-        os.remove(mockgz.with_suffix(""))
+    assert MOCK_GZ_BODY in body

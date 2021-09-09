@@ -25,6 +25,7 @@ def housekeeping() -> None:
     DOWNLOAD_PATH.mkdir(exist_ok=True)
     expiry = datetime.now() - timedelta(days=CONFIG.getint("keep_for_days"))
 
+    # Old gz file cleanup
     for file in DOWNLOAD_PATH.glob("*txt.gz"):
         created = datetime.fromtimestamp(os.path.getctime(file))
         if expiry > created:
@@ -49,17 +50,13 @@ def download_itemlist(url: str, filepath: Path) -> None:
     log.info("File saved as '%s'", filepath)
 
 
-def unpack_itemlist(filepath: Path) -> None:
-    """Decompress the gzip of a given itemlist, will be saved in same path"""
+def unpack_itemlist(filepath: Path) -> str:
+    """Decompress the gzip of a given itemlist"""
 
-    newfile = filepath.with_suffix("")
-
-    log.info("Unpacking `%s` to `%s`", filepath, newfile)
+    log.info("Unpacking `%s`", filepath)
 
     with gzip.open(filepath, "rb") as infile:
-        with open(newfile, "w", encoding="utf-8") as outfile:
-            for line in infile:
-                outfile.write(line.decode())
+        return infile.read().decode()
 
 
 def main() -> int:

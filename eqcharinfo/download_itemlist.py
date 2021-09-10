@@ -1,7 +1,6 @@
 """
 Downloads and maintains existing downloads (cleanup) of Lucy's itemlist
 """
-import gzip
 import os
 from datetime import datetime
 from datetime import timedelta
@@ -50,22 +49,11 @@ def download_itemlist(url: str, filepath: Path) -> None:
     log.info("File saved as '%s'", filepath)
 
 
-def unpack_itemlist(filepath: Path) -> str:
-    """Decompress the gzip of a given itemlist"""
-
-    log.info("Unpacking `%s`", filepath)
-
-    with gzip.open(filepath, "rb") as infile:
-        return infile.read().decode()
-
-
 def main() -> int:
     """Point of entry"""
 
     housekeeping()
     download_itemlist(DOWNLOAD_URL, FILE_PATH)
-    unpack_itemlist(FILE_PATH)
-
     return 0
 
 

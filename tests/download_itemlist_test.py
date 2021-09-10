@@ -1,18 +1,20 @@
-import gzip
 import logging
 import os
 import pathlib
 import tempfile
 from typing import Any
 from typing import Generator
+from unittest.mock import patch
 
 import pytest
 
 from eqcharinfo import download_itemlist
+from eqcharinfo.utils import runtime_loader
 
 TEST_URL = "https://github.com/Preocts/eqcharinfo/blob/main/README.md"
 MOCK_GZ = pathlib.Path("./tests/fixtures/mock_itemlist.txt.gz")
 MOCK_GZ_BODY = "This is a test file"
+CONFIG = runtime_loader.load_config()["DOWNLOAD-ITEMFILE"]
 
 
 @pytest.fixture(scope="function", name="mockfile")
@@ -24,22 +26,6 @@ def fixture_mockfile() -> Generator[pathlib.Path, None, None]:
         yield pathlib.Path(path)
     finally:
         os.remove(path)
-
-
-@pytest.fixture(scope="function", name="mockgz")
-def fixture_mockgz(mockfile: pathlib.Path) -> Generator[pathlib.Path, None, None]:
-    """Creates a temp `*.txt.gz` file, yields Path to file"""
-    gzfile = mockfile.name + ".txt.gz"
-    gzpath = mockfile.parent / gzfile
-    try:
-        with gzip.open(gzpath, "wb") as gfileout:
-            gfileout.write(MOCK_GZ_BODY.encode())
-
-        yield gzpath
-
-    finally:
-
-        os.remove(gzpath)
 
 
 def test_download_file(mockfile: pathlib.Path, caplog: Any) -> None:
@@ -57,9 +43,15 @@ def test_download_file(mockfile: pathlib.Path, caplog: Any) -> None:
     assert "Skipping download" in caplog.text
 
 
-def test_unpack_file(mockgz: pathlib.Path) -> None:
-    """Unpack the fixture gzip"""
+def test_housekeeping() -> None:
+    mock_path = pathlib.Path("./tests/fixtures").resolve()
+    fp, path = tempfile.mkstemp(suffix="deleteme.txt.gz", dir=mock_path)
+    os.close(fp)
 
-    body = download_itemlist.unpack_itemlist(mockgz)
+    with patch.object(download_itemlist, "CONFIG", CONFIG) as mockconfig:
+        with patch.object(download_itemlist, "DOWNLOAD_PATH", mock_path):
+            mockconfig["keep_for_days"] = "0"
 
-    assert MOCK_GZ_BODY in body
+            download_itemlist.housekeeping()
+
+    assert not pathlib.Path(path).exists()

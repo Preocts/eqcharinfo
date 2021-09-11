@@ -2,7 +2,7 @@ from typing import Generator
 
 import pytest
 
-from eqcharinfo.inventoryclient import InventoryClient
+from eqcharinfo.client.inventoryclient import InventoryClient
 from eqcharinfo.models.inventory import Inventory
 
 MOCKFILE = "./tests/fixtures/inventory.txt"

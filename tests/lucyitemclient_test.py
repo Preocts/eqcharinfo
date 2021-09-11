@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 import pytest
 
-from eqcharinfo.lucyitemclient import LucyItemClient
+from eqcharinfo.client.lucyitemclient import LucyItemClient
 from eqcharinfo.models.lucyitem import LucyItem
 
 FIXTURE_DIR = "./tests/fixtures"

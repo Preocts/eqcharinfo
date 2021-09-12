@@ -2,7 +2,7 @@
 import csv
 import gzip
 import logging
-from configparser import ConfigParser
+from configparser import SectionProxy
 from pathlib import Path
 from typing import Dict
 from typing import Generator
@@ -18,9 +18,9 @@ class LucyItemClient:
 
     log = logging.getLogger(__name__)
 
-    def __init__(self, config: ConfigParser) -> None:
-        self.file_dir = config["DOWNLOAD-ITEMFILE"]["file_path"]
-        self.file_pattern = config["DOWNLOAD-ITEMFILE"]["glob_pattern"]
+    def __init__(self, config_section: SectionProxy) -> None:
+        self.file_dir = config_section.get("file_path", "")
+        self.file_pattern = config_section.get("glob_pattern", "")
         self._lucyitems: Dict[str, LucyItem] = {}
 
     def __iter__(self) -> Generator[LucyItem, None, None]:

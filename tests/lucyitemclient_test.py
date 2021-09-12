@@ -16,7 +16,7 @@ FIXTURE_FILE = "./tests/fixtures/itemlist.gz"
 def fixture_client() -> Generator[LucyItemClient, None, None]:
     """Create client fixture with mocked locations"""
     config = load_config()
-    client = LucyItemClient(config)
+    client = LucyItemClient(config["DOWNLOAD-ITEMFILE"])
 
     with patch.object(client, "file_pattern", FIXTURE_PATTERN):
         with patch.object(client, "file_dir", FIXTURE_DIR):

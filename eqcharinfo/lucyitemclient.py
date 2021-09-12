@@ -19,7 +19,7 @@ class LucyItemClient:
     log = logging.getLogger(__name__)
 
     def __init__(self, config: ConfigParser) -> None:
-        self.file_dir = config["DOWNLOAD-ITEMFILE"]["download_path"]
+        self.file_dir = config["DOWNLOAD-ITEMFILE"]["file_path"]
         self.file_pattern = config["DOWNLOAD-ITEMFILE"]["glob_pattern"]
         self._lucyitems: Dict[str, LucyItem] = {}
 

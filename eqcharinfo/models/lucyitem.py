@@ -5,6 +5,6 @@ import dataclasses
 class LucyItem:
     """Matches values from Lucy's itemlist"""
 
-    id: int
+    id: str
     name: str
     lucylink: str

@@ -3,10 +3,13 @@ Used to manage all run-time setup operations
 """
 import logging
 import os
+import sqlite3
 from configparser import ConfigParser
 from pathlib import Path
+from sqlite3 import Connection
 
 EQCHARINFO_LOG = os.getenv("EQCHARINFO_LOG", "DEBUG")
+EQCHARDATABASE = os.getenv("EQCHARDATABASE", "eqcharinfo.sqlite3")
 
 log = logging.getLogger(__name__)
 
@@ -38,3 +41,8 @@ def load_config() -> ConfigParser:
     log.info("Loaded the following config file(s): %s", files)
 
     return config
+
+
+def load_database(database: str = EQCHARDATABASE) -> Connection:
+    """Returns connection to sqlite3 database, ensures connection is closed"""
+    return sqlite3.connect(database=database)

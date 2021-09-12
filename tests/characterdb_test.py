@@ -3,36 +3,39 @@ from typing import Generator
 import pytest
 
 from eqcharinfo.characterdb import CharacterDB as DB
+from eqcharinfo.client.database_manager import DatabaseManager
 from eqcharinfo.models.inventory import Inventory
+from eqcharinfo.utils.runtime_loader import load_database
 
 MOCK_CHR = "mockchar"
 MOCK_INV = Inventory("location", "name", "1", "count", "slots")
-MOCK_LL = "https://mock"
 TEST_ROW_COUNT = 10
 
 
 @pytest.fixture(scope="function", name="empty_client")
 def fixture_empty_client() -> Generator[DB, None, None]:
     """Create client"""
-    client = DB(":memory:")
+    database_connection = load_database(":memory:")
+    builder = DatabaseManager(database_connection)
+    builder.create_tables()
+
+    client = DB(database_connection)
     yield client
 
 
 @pytest.fixture(scope="function", name="client")
 def fixture_client(empty_client: DB) -> Generator[DB, None, None]:
     """Fill some rows for testing"""
-    for _ in range(TEST_ROW_COUNT):
-        empty_client.create(MOCK_CHR, MOCK_INV, MOCK_LL)
+    for idx in range(TEST_ROW_COUNT):
+        MOCK_INV.location = f"slot{idx}"
+        empty_client.create(MOCK_CHR, MOCK_INV)
 
     yield empty_client
 
 
-def test_create(empty_client: DB) -> None:
+def test_create(client: DB) -> None:
     """Create rows"""
-    for _ in range(TEST_ROW_COUNT):
-        empty_client.create(MOCK_CHR, MOCK_INV, MOCK_LL)
-
-    cursor = empty_client.conn.cursor()
+    cursor = client.conn.cursor()
     cursor.execute("SELECT * FROM character_table")
     results = cursor.fetchall()
     assert len(results) == TEST_ROW_COUNT

@@ -7,7 +7,7 @@ def most_recent(directory: str, glob_pattern: str) -> str:
 
     path = Path(directory).resolve()
     if not path.is_dir():
-        raise ValueError(f"Not a directory: '{directory}'")
+        raise ValueError(f"Not a directory: '{path}'")
 
     files = [str(file) for file in path.glob(glob_pattern) if file.is_file()]
     return max(files, key=os.path.getctime)

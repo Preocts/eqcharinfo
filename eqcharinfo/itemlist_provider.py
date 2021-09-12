@@ -19,7 +19,7 @@ class ItemListProvider:
         self.log = logging.getLogger(__name__)
         self.config = config
         filename_format = self.config.get("filename", "undefined")
-        self.dir_path = Path(__file__).parent / self.config.get("file_path", "")
+        self.dir_path = Path(self.config.get("file_path", "")).resolve()
         self.file_url = self.config.get("url", "")
         self.file_path = self.dir_path / datetime.now().strftime(filename_format)
 

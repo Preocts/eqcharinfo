@@ -16,9 +16,10 @@ CHARACTER_TABLE = (
 
 LUCY_TABLE = (
     "CREATE TABLE IF NOT EXISTS lucy_table ("
-    "id TEXT PRIMARY KEY, "
+    "id TEXT NOT NULL, "
     "name TEXT NOT NULL, "
-    "lucylink TEXT NOT NULL);"
+    "lucylink TEXT NOT NULL, "
+    "PRIMARY KEY (id));"
 )
 
 

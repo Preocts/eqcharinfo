@@ -46,8 +46,8 @@ class InventoryClient:
                     Inventory(
                         location=row["Location"],
                         name=row["Name"],
-                        id=int(row["ID"]),
-                        count=int(row["Count"]),
-                        slots=int(row["Slots"]),
+                        id=row["ID"],
+                        count=row["Count"],
+                        slots=row["Slots"],
                     )
                 )

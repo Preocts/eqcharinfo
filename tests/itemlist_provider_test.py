@@ -4,16 +4,13 @@ import pathlib
 import tempfile
 from typing import Any
 from typing import Generator
-from unittest.mock import patch
 
 import pytest
 
-from eqcharinfo import download_itemlist
+from eqcharinfo.itemlist_provider import ItemListProvider
 from eqcharinfo.utils import runtime_loader
 
 TEST_URL = "https://github.com/Preocts/eqcharinfo/blob/main/README.md"
-MOCK_GZ = pathlib.Path("./tests/fixtures/mock_itemlist.txt.gz")
-MOCK_GZ_BODY = "This is a test file"
 CONFIG = runtime_loader.load_config()["DOWNLOAD-ITEMFILE"]
 
 
@@ -31,27 +28,32 @@ def fixture_mockfile() -> Generator[pathlib.Path, None, None]:
 def test_download_file(mockfile: pathlib.Path, caplog: Any) -> None:
     """Grab a test download file"""
 
+    provider = ItemListProvider(CONFIG)
+    provider.file_url = TEST_URL
+    provider.file_path = mockfile
+
     caplog.set_level(logging.INFO)
     os.remove(mockfile)
 
-    download_itemlist.download_itemlist(TEST_URL, mockfile)
+    provider.download_itemlist()
 
     assert "File saved as" in caplog.text
 
-    download_itemlist.download_itemlist(TEST_URL, mockfile)
+    provider.download_itemlist()
 
-    assert "Skipping download" in caplog.text
+    assert "skipping download" in caplog.text
 
 
 def test_housekeeping() -> None:
-    mock_path = pathlib.Path("./tests/fixtures").resolve()
+    """Clean up handling"""
+    mock_path = pathlib.Path("./tests/fixtures")
     fp, path = tempfile.mkstemp(suffix="deleteme.txt.gz", dir=mock_path)
     os.close(fp)
 
-    with patch.object(download_itemlist, "CONFIG", CONFIG) as mockconfig:
-        with patch.object(download_itemlist, "DOWNLOAD_PATH", mock_path):
-            mockconfig["keep_for_days"] = "0"
+    provider = ItemListProvider(CONFIG)
+    provider.dir_path = mock_path
+    provider.config["keep_for_days"] = "0"
 
-            download_itemlist.housekeeping()
+    provider.housekeeping()
 
     assert not pathlib.Path(path).exists()

@@ -2,6 +2,7 @@
 import csv
 import gzip
 import logging
+from configparser import ConfigParser
 from pathlib import Path
 from typing import Generator
 from typing import List
@@ -13,13 +14,11 @@ from eqcharinfo.utils.fileutil import most_recent
 class LucyItemClient:
     """Lucy Item data client"""
 
-    # TODO: These should be from config file
-    FILE_PATTERN = "*txt.gz"
-    FILE_DIR = "../downloads"
-
     log = logging.getLogger(__name__)
 
-    def __init__(self) -> None:
+    def __init__(self, config: ConfigParser) -> None:
+        self.file_dir = config["DOWNLOAD-ITEMFILE"]["download_path"]
+        self.file_pattern = config["DOWNLOAD-ITEMFILE"]["glob_pattern"]
         self._lucyitems: List[LucyItem] = []
 
     def __iter__(self) -> Generator[LucyItem, None, None]:
@@ -37,7 +36,7 @@ class LucyItemClient:
 
     def load_from_recent(self) -> None:
         """Loads from most recent item data file available"""
-        self._load(Path(most_recent(self.FILE_DIR, self.FILE_PATTERN)))
+        self._load(Path(most_recent(self.file_dir, self.file_pattern)))
 
     def _load(self, filepath: Path) -> None:
         """Private: Loads item data from Path given"""

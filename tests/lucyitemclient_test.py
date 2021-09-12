@@ -5,6 +5,7 @@ import pytest
 
 from eqcharinfo.client.lucyitemclient import LucyItemClient
 from eqcharinfo.models.lucyitem import LucyItem
+from eqcharinfo.utils.runtime_loader import load_config
 
 FIXTURE_DIR = "./tests/fixtures"
 FIXTURE_PATTERN = "*.gz"
@@ -14,10 +15,11 @@ FIXTURE_FILE = "./tests/fixtures/itemlist.gz"
 @pytest.fixture(scope="function", name="client")
 def fixture_client() -> Generator[LucyItemClient, None, None]:
     """Create client fixture with mocked locations"""
-    client = LucyItemClient()
+    config = load_config()
+    client = LucyItemClient(config)
 
-    with patch.object(client, "FILE_PATTERN", FIXTURE_PATTERN):
-        with patch.object(client, "FILE_DIR", FIXTURE_DIR):
+    with patch.object(client, "file_pattern", FIXTURE_PATTERN):
+        with patch.object(client, "file_dir", FIXTURE_DIR):
             yield client
 
 

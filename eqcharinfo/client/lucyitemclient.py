@@ -34,6 +34,7 @@ class LucyItemClient:
 
     def get_by_id(self, id: str) -> Optional[LucyItem]:
         """Get an item by id, returns None if not found"""
+        return self._lucyitems.get(id)
 
     def load_from_file(self, filepath: str) -> None:
         """Loads item data from specific file"""

@@ -43,3 +43,14 @@ def test_iter(client: LucyItemClient) -> None:
     client.load_from_recent()
     for item in client:
         assert isinstance(item, LucyItem)
+
+
+def test_get(client: LucyItemClient) -> None:
+    """Single item fetch"""
+    client.load_from_file(FIXTURE_FILE)
+    result = client.get_by_id("1001")
+
+    assert result is not None
+    assert result.id == "1001"
+    assert result.name == "Cloth Cap"
+    assert result.lucylink == "https://lucy.allakhazam.com/item.html?id=1001"

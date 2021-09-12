@@ -9,6 +9,3 @@ class Inventory:
     id: str
     count: str
     slots: str
-
-    def __repr__(self) -> str:
-        return f"{self.location}\t{self.name}\t{self.id}\t{self.count}\t{self.slots}"

@@ -1,12 +1,11 @@
 """
 Manage CRUD functions for character database
 """
-import logging
 from sqlite3 import Connection
 from typing import Any
 from typing import List
 
-from eqcharinfo.models.chartablerow import CharTableRow
+from eqcharinfo.models.characterinventory import CharacterInventory
 from eqcharinfo.models.inventory import Inventory
 
 
@@ -14,7 +13,6 @@ class CharacterDB:
     """Manage CRUD functions for character database"""
 
     def __init__(self, database_connection: Connection) -> None:
-        self.log = logging.getLogger(__name__)
         self.conn = database_connection
 
     def create(self, charname: str, inventory: Inventory) -> None:
@@ -35,23 +33,27 @@ class CharacterDB:
 
         self._execute(sql, data)
 
-    def get_by_char(self, charname: str) -> List[CharTableRow]:
+    def get_by_char(self, charname: str) -> List[CharacterInventory]:
         """Return character table rows by character name, can be empty"""
         data = [charname]
         sql = (
-            "SELECT charname, location, name, id, count, slots "
+            "SELECT location, name, id, count, slots, charname "
             "FROM character_table WHERE charname=?"
         )
-        return self._execute(sql, data)
+        results = self._execute(sql, data)
 
-    def get_by_itemid(self, itemid: str) -> List[CharTableRow]:
+        return [CharacterInventory(*row) for row in results]
+
+    def get_by_itemid(self, itemid: str) -> List[CharacterInventory]:
         """Return character table rows by itemid, can be empty"""
         data = [itemid]
         sql = (
-            "SELECT charname, location, name, id, count, slots "
+            "SELECT location, name, id, count, slots, charname "
             "FROM character_table WHERE id=?"
         )
-        return self._execute(sql, data)
+        results = self._execute(sql, data)
+
+        return [CharacterInventory(*row) for row in results]
 
     def _execute(self, sql: str, data: List[Any] = []) -> List[Any]:
         """Internal use only"""

@@ -45,6 +45,13 @@ def test_get_by_char(client: DB) -> None:
     """Get by character name"""
     result = client.get_by_char(MOCK_CHR)
 
+    assert result[0].charname == MOCK_CHR
+    assert "slot" in result[0].location
+    assert result[0].name == "name"
+    assert result[0].id == "1"
+    assert result[0].count == "count"
+    assert result[0].slots == "slots"
+
     assert len(result) == TEST_ROW_COUNT
 
 
@@ -53,3 +60,12 @@ def test_get_by_itemid(client: DB) -> None:
     result = client.get_by_itemid("1")
 
     assert len(result) == TEST_ROW_COUNT
+
+
+def test_empty_get(client: DB) -> None:
+    """Clean empty pulls"""
+    result = client.get_by_char("Moo")
+    assert not result
+
+    result = client.get_by_itemid("Moo")
+    assert not result

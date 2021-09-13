@@ -14,12 +14,12 @@ TEST_ROW_COUNT = 10
 @pytest.fixture(scope="function", name="empty_client")
 def fixture_empty_client() -> Generator[DB, None, None]:
     """Create client"""
-    database_connection = load_database(":memory:")
-    builder = DatabaseManager(database_connection)
-    builder.create_tables()
+    with load_database(":memory:") as database_connection:
+        builder = DatabaseManager(database_connection)
+        builder.create_tables()
 
-    client = DB(database_connection)
-    yield client
+        client = DB(database_connection)
+        yield client
 
 
 @pytest.fixture(scope="function", name="client")

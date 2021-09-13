@@ -1,12 +1,13 @@
 """
 Used to manage all run-time setup operations
 """
+import contextlib
 import logging
 import os
 import sqlite3
 from configparser import ConfigParser
-from pathlib import Path
 from sqlite3 import Connection
+from typing import Generator
 
 EQCHARINFO_LOG = os.getenv("EQCHARINFO_LOG", "DEBUG")
 EQCHARDATABASE = os.getenv("EQCHARDATABASE", "eqcharinfo.sqlite3")
@@ -27,22 +28,28 @@ def set_logger(name: str, level: str = EQCHARINFO_LOG) -> logging.Logger:
 
 
 def load_config() -> ConfigParser:
-    """Loads default config file or file set by EQCHARINFO_ENV"""
-    env = os.getenv("EQCHARINFO_ENV", "")
-    ini_list = [
-        (Path(__file__).parent / "../../appsetting.ini").resolve(),
-        (Path(__file__).parent / f"../../appsetting-{env}").resolve(),
-    ]
-
+    """Loads default config file or file set by EQCHARINFO_CONFIG"""
     config = ConfigParser()
 
-    files = config.read(ini_list)
+    files = config.read(os.getenv("EQCHARINFO_CONFIG", "appsettings.ini"))
 
     log.info("Loaded the following config file(s): %s", files)
 
     return config
 
 
-def load_database(database: str = EQCHARDATABASE) -> Connection:
-    """Returns connection to sqlite3 database, ensures connection is closed"""
-    return sqlite3.connect(database=database)
+@contextlib.contextmanager
+def load_database(database: str = EQCHARDATABASE) -> Generator[Connection, None, None]:
+    """
+    Connect to sqlite3 database, ensures connection is closed with context manager
+
+    Common Use:
+        with load_database() as dbconnection:
+            ...
+    """
+    try:
+        connection = sqlite3.connect(database=database)
+        yield connection
+
+    finally:
+        connection.close()

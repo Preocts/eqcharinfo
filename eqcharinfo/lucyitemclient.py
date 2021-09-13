@@ -27,9 +27,6 @@ class LucyItemClient:
         for lucyitem in [value for value in self._lucyitems.values()]:
             yield lucyitem
 
-    def __len__(self) -> int:
-        return len(self._lucyitems)
-
     @property
     def lucyitems(self) -> List[LucyItem]:
         """List of loaded items, can be empty"""

@@ -2,7 +2,7 @@ from typing import Generator
 
 import pytest
 
-from eqcharinfo.database_manager import DatabaseManager
+from eqcharinfo.controllers.database_manager import DatabaseManager
 from eqcharinfo.lucyitemdb import LucyItemDB as DB
 from eqcharinfo.models.lucyitem import LucyItem
 from eqcharinfo.utils.runtime_loader import load_database

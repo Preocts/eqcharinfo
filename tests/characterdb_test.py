@@ -3,7 +3,7 @@ from typing import Generator
 import pytest
 
 from eqcharinfo.characterdb import CharacterDB as DB
-from eqcharinfo.database_manager import DatabaseManager
+from eqcharinfo.controllers.database_manager import DatabaseManager
 from eqcharinfo.models.inventory import Inventory
 from eqcharinfo.utils.runtime_loader import load_database
 

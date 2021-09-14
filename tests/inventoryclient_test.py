@@ -21,7 +21,7 @@ def test_load_file(client: InventoryClient) -> None:
     """Load the file, assert some basic rules"""
     client.load_from_file(MOCKFILE)
 
-    assert len(client.inventories)
+    assert len(client.get_list())
 
 
 def test_load_string(client: InventoryClient) -> None:

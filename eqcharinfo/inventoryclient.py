@@ -5,6 +5,7 @@ from io import StringIO
 from pathlib import Path
 from typing import Dict
 from typing import Generator
+from typing import List
 
 from eqcharinfo.models.inventory import Inventory
 
@@ -23,6 +24,10 @@ class InventoryClient:
         """Iterate over inventories"""
         for inventory in self.inventories.values():
             yield inventory
+
+    def get_list(self) -> List[Inventory]:
+        """Returns list of inventory objects"""
+        return list(self.inventories.values())
 
     def load_from_file(self, filepath: str) -> None:
         """Populates inventory from filepath"""

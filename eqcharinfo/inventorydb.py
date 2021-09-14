@@ -33,6 +33,29 @@ class InventoryDB:
 
         self._execute(sql, data)
 
+    def batch_create(self, charname: str, inventories: List[Inventory]) -> None:
+        """Batch create inventory rows"""
+        sql = (
+            "INSERT INTO character_table "
+            "(charname, location, name, id, count, slots) "
+            "VALUES (?, ?, ?, ?, ?, ?)"
+        )
+        cursor = self.conn.cursor()
+
+        try:
+            for inventory in inventories:
+                data = [
+                    charname,
+                    inventory.location,
+                    inventory.name,
+                    inventory.id,
+                    inventory.count,
+                    inventory.slots,
+                ]
+                cursor.execute(sql, data)
+        finally:
+            cursor.close()
+
     def get_by_char(self, charname: str) -> List[CharacterInventory]:
         """Return character table rows by character name, can be empty"""
         data = [charname]
@@ -54,6 +77,12 @@ class InventoryDB:
         results = self._execute(sql, data)
 
         return [CharacterInventory(*row) for row in results]
+
+    def delete_by_charname(self, charname: str) -> None:
+        """Deletes all rows by charname"""
+        data = [charname]
+        sql = "DELETE from character_table WHERE charname=?"
+        self._execute(sql, data)
 
     def _execute(self, sql: str, data: List[Any] = []) -> List[Any]:
         """Internal use only"""

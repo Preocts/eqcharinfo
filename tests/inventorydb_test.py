@@ -69,3 +69,9 @@ def test_empty_get(client: DB) -> None:
 
     result = client.get_by_itemid("Moo")
     assert not result
+
+
+def test_delete_by_charname(client: DB) -> None:
+    """Delete the things"""
+    client.delete_by_charname(MOCK_CHR)
+    assert not client.get_by_char(MOCK_CHR)

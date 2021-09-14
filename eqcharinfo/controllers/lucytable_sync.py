@@ -1,13 +1,13 @@
 """
 Controller for downloading and syncing new Lucy item data to the database
 """
+import logging
 from configparser import ConfigParser
 from sqlite3 import Connection
 
 from eqcharinfo.itemlist_provider import ItemListProvider
 from eqcharinfo.lucyitemclient import LucyItemClient
 from eqcharinfo.lucyitemdb import LucyItemDB
-from eqcharinfo.utils import runtime_loader
 
 
 class LucyTableSync:
@@ -18,7 +18,7 @@ class LucyTableSync:
         self.config = config
         self.database_connection = database_connection
 
-        self.log = runtime_loader.set_logger(__name__)
+        self.log = logging.getLogger(__name__)
         self.lucydb = LucyItemDB(self.database_connection)
         self.itemprovider = ItemListProvider(self.config["DOWNLOAD-ITEMFILE"])
         self.itemclient = LucyItemClient(self.config["DOWNLOAD-ITEMFILE"])

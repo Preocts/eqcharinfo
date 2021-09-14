@@ -1,53 +1,54 @@
 """Reads in an Everquest /inventory file"""
 import csv
 import logging
+from io import StringIO
 from pathlib import Path
+from typing import Dict
 from typing import Generator
-from typing import List
-from typing import Optional
 
 from eqcharinfo.models.inventory import Inventory
 
 
 class InventoryClient:
-    """Reads in an Everquest inventory file"""
+    """Parses an EverQuest character inventory file"""
 
     log = logging.getLogger(__name__)
 
-    def __init__(self, filepath: str, character_name: Optional[str] = None) -> None:
+    def __init__(self, character_name: str) -> None:
         """Loads inventory file. If character name is excluded, filename is used"""
-        self._filepath = Path(filepath).resolve()
-        self._name = self._filepath.name if character_name is None else character_name
-        self._inventories: List[Inventory] = []
+        self.character_name = character_name
+        self.inventories: Dict[str, Inventory] = {}
 
     def __iter__(self) -> Generator[Inventory, None, None]:
         """Iterate over inventories"""
-        for inventory in self._inventories:
+        for inventory in self.inventories.values():
             yield inventory
 
-    @property
-    def name(self) -> str:
-        """Character name for the inventory"""
-        return self._name
-
-    @property
-    def inventories(self) -> List[Inventory]:
-        """List of Inventory objects loaded"""
-        return self._inventories.copy()
-
-    def load_file(self) -> None:
-        """Populates inventory from file in instance's filepath attribute"""
-        self.log.info("Loading inventory file `%s`", self._filepath)
-
-        with self._filepath.open(mode="r", encoding="utf-8") as infile:
+    def load_from_file(self, filepath: str) -> None:
+        """Populates inventory from filepath"""
+        path = Path(filepath).resolve()
+        self.log.info("Loading inventory file `%s`", path)
+        with path.open(mode="r", encoding="utf-8") as infile:
             dictreader = csv.DictReader(infile, delimiter="\t")
-            for row in dictreader:
-                self._inventories.append(
-                    Inventory(
-                        location=row["Location"],
-                        name=row["Name"],
-                        id=row["ID"],
-                        count=row["Count"],
-                        slots=row["Slots"],
-                    )
-                )
+            self._dictreader_to_inventory(dictreader)
+
+    def load_from_string(self, string: str) -> None:
+        """Populates inventory from string"""
+        filelike = StringIO(string)
+        self.log.info("Loading inventory file from string. Len: %d", len(string))
+        dictreader = csv.DictReader(filelike, delimiter="\t")
+        self._dictreader_to_inventory(dictreader)
+
+    def _dictreader_to_inventory(
+        self,
+        dictreader: csv.DictReader,  # type: ignore
+    ) -> None:
+        """Internal Use: translates dictreader to Inventory objects"""
+        for row in dictreader:
+            self.inventories[row["Location"]] = Inventory(
+                location=row["Location"],
+                name=row["Name"],
+                id=row["ID"],
+                count=row["Count"],
+                slots=row["Slots"],
+            )

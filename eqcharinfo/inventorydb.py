@@ -9,7 +9,7 @@ from eqcharinfo.models.characterinventory import CharacterInventory
 from eqcharinfo.models.inventory import Inventory
 
 
-class CharacterDB:
+class InventoryDB:
     """Manage CRUD functions for character database"""
 
     def __init__(self, database_connection: Connection) -> None:

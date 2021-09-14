@@ -2,8 +2,8 @@ from typing import Generator
 
 import pytest
 
-from eqcharinfo.characterdb import CharacterDB as DB
 from eqcharinfo.controllers.database_manager import DatabaseManager
+from eqcharinfo.inventorydb import InventoryDB as DB
 from eqcharinfo.models.inventory import Inventory
 from eqcharinfo.utils.runtime_loader import load_database
 

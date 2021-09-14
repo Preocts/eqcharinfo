@@ -13,7 +13,10 @@ from eqcharinfo.controllers.database_manager import DatabaseManager
 from eqcharinfo.controllers.inventorytable_sync import InventoryTableSync
 from eqcharinfo.utils import runtime_loader
 
+
 MOCK_FILE = "./tests/fixtures/inventory.txt"
+
+runtime_loader.add_logger()
 
 
 @pytest.fixture(scope="function", name="controller")

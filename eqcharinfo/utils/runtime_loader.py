@@ -15,16 +15,9 @@ EQCHARDATABASE = os.getenv("EQCHARDATABASE", "eqcharinfo.sqlite3")
 log = logging.getLogger(__name__)
 
 
-def set_logger(name: str, level: str = EQCHARINFO_LOG) -> logging.Logger:
+def add_logger() -> None:
     """Set a logger, overrides root handlers if already set"""
-    root = logging.getLogger()
-    if root.handlers:
-        for handler in root.handlers:
-            root.removeHandler(handler)
-
-    logging.basicConfig(format="%(asctime)s %(message)s", level=level)
-
-    return logging.getLogger(name)
+    logging.basicConfig(format="%(asctime)s %(message)s", level=EQCHARINFO_LOG)
 
 
 def load_config() -> ConfigParser:

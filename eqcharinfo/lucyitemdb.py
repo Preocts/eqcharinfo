@@ -1,5 +1,5 @@
 """
-Manage CRUD fucntions for lucy database
+Manage CRUD functions for lucy database
 """
 import logging
 from sqlite3 import Connection

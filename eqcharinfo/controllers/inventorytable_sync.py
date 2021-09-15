@@ -7,7 +7,7 @@ import logging
 from configparser import ConfigParser
 from sqlite3 import Connection
 
-from eqcharinfo.inventoryclient import InventoryClient
+from eqcharinfo.character_inventory_client import CharacterInventoryClient
 from eqcharinfo.inventorydb import InventoryDB
 
 
@@ -21,12 +21,14 @@ class InventoryTableSync:
 
         self.log = logging.getLogger(__name__)
         self.inventorydb = InventoryDB(database_connection)
+        self.inventories = CharacterInventoryClient()
 
     def process_inventory(self, character_name: str, contents: str) -> None:
         """Processes an inventory file"""
-        new_inventory = InventoryClient(character_name)
-        new_inventory.load_from_string(contents)
+        self.inventories.load_from_string(contents, character_name)
 
         self.inventorydb.delete_by_charname(character_name)
 
-        self.inventorydb.batch_create(character_name, new_inventory.get_list())
+        self.inventorydb.batch_create(
+            character_name, self.inventories.get_character(character_name)
+        )

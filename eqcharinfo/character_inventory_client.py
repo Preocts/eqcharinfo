@@ -7,6 +7,7 @@ from typing import Dict
 from typing import List
 
 from eqcharinfo.models.inventory import Inventory
+from eqcharinfo.utils import fuzzy_search
 
 CHARINV = Dict[str, Dict[str, Inventory]]
 
@@ -23,6 +24,18 @@ class CharacterInventoryClient:
     def get_character(self, character_name: str) -> List[Inventory]:
         """Returns list of inventory objects for a given character, can be empty"""
         return list(self._char_inventories.get(character_name, {}).values())
+
+    def search_character(
+        self, character_name: str, search_string: str, max_results: int = 10
+    ) -> List[Inventory]:
+        """Searches a character's inventory"""
+        char_slots = self._char_inventories.get(character_name, {})
+        search_items = {inv.name: inv.id for inv in char_slots.values()}
+        result = fuzzy_search.search(search_string, search_items, max_results)
+        found: List[Inventory] = []
+        for itemid in result.values():
+            found.extend([slot for slot in char_slots.values() if slot.id == itemid])
+        return found
 
     def load_from_file(self, filepath: str, character_name: str) -> None:
         """Populates inventory of character from filepath"""
@@ -45,6 +58,8 @@ class CharacterInventoryClient:
         """Internal Use: translates dictreader to Inventory objects"""
         self._char_inventories[character_name] = {}
         for row in dictreader:
+            if row["Name"] == "Empty":
+                continue
             self._char_inventories[character_name][row["Location"]] = Inventory(
                 location=row["Location"],
                 name=row["Name"],

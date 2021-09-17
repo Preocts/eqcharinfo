@@ -10,6 +10,7 @@ from typing import List
 from typing import Optional
 
 from eqcharinfo.models.lucyitem import LucyItem
+from eqcharinfo.utils import fuzzy_search
 from eqcharinfo.utils.fileutil import most_recent
 
 
@@ -35,6 +36,12 @@ class LucyItemClient:
     def get_by_id(self, id: str) -> Optional[LucyItem]:
         """Get an item by id, returns None if not found"""
         return self._lucyitems.get(id)
+
+    def search(self, search_term: str, max_results: int = 10) -> List[LucyItem]:
+        """Searches the loaded items and returns best match, up to the max results"""
+        search_items = {item.name: item.id for item in self._lucyitems.values()}
+        result = fuzzy_search.search(search_term, search_items, max_results)
+        return [self._lucyitems[result_id] for result_id in result.values()]
 
     def load_from_file(self, filepath: str) -> None:
         """Loads item data from specific file"""

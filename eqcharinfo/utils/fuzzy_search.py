@@ -1,29 +1,37 @@
 """Use the Levenshtein Distance table as a base for fuzzy searching"""
+import re
 from typing import Dict
-from typing import List
-from typing import MutableSet
 
 
-def search(search_term: str, values: List[str], max_result: int = 10) -> List[str]:
-    """Finds the top N matches of search_term in values"""
-    if not values or search_term:
-        return []
+def search(
+    search_term: str, values: Dict[str, str], max_result: int = 10
+) -> Dict[str, str]:
+    """
+    Finds the top N matches of search_term in values
 
-    # scores = {value: 0 for value in values if value}
+    'values' should be [{"item name": "item id"}, ...]
+    """
+    if not values or not search_term:
+        return {}
+    limited_values = {
+        key: value
+        for key, value in values.items()
+        if re.findall(search_term.strip(), key, flags=re.I)
+    }
 
-    return []
-    # for value in scores:
-    #     if len(value)
+    scores = {
+        value: levenshtein_distance(search_term.lower(), value.lower())
+        for value in limited_values.keys()
+        if value
+    }
 
+    scores = {key: value for key, value in sorted(scores.items(), key=lambda x: x[1])}
 
-def set_by_length(values: List[str]) -> Dict[int, MutableSet[str]]:
-    """Create a map of value length paired with sets of values"""
-    results: Dict[int, MutableSet[str]] = {}
-    for value in values:
-        if len(value) in results:
-            results[len(value)].add(value)
-        else:
-            results[len(value)] = {value}
+    results: Dict[str, str] = {}
+    for idx, key in enumerate(scores):
+        if idx >= max_result:
+            break
+        results[key] = values[key]
     return results
 
 
@@ -55,13 +63,14 @@ def levenshtein_distance(string01: str, string02: str) -> int:
     return table[-1][-1]
 
 
-def hamming_distance(string01: str, string02: str) -> int:
-    """Number of variance in two equal length strings"""
-    if len(string01) != len(string02):
-        raise ValueError("Expected equal length strings")
-    return sum(xi != yi for xi, yi in zip(string01, string02))
+# def hamming_distance(string01: str, string02: str) -> int:
+#     """Number of variance in two equal length strings"""
+#     if len(string01) != len(string02):
+#         raise ValueError("Expected equal length strings")
+#     return sum(xi != yi for xi, yi in zip(string01, string02))
 
 
+# Testing testing testing
 if __name__ == "__main__":
     from time import perf_counter_ns
     from eqcharinfo.utils import runtime_loader
@@ -74,17 +83,21 @@ if __name__ == "__main__":
     print(f"Load time: {(perf_counter_ns() - tic) / 1_000_000}ms")
 
     tic = perf_counter_ns()
-    itemlist = [item.name for item in client.lucyitems]
+    itemlist = {item.name: item.id for item in client.lucyitems}
     print(f"list time: {(perf_counter_ns() - tic) / 1_000_000}ms")
 
-    tic = perf_counter_ns()
-    results = set_by_length(itemlist)
-    print(f"set time: {(perf_counter_ns() - tic) / 1_000_000}ms")
-
-    print()
     print(f"Length of list: {len(itemlist)}")
-    print(f"Length of results: {len(results)}")
+    print()
 
-    print("Word Length | Number of words")
-    for length in sorted(results.keys()):
-        print(f"{length:>10} | {len(results[length]):>5}")
+    tic = perf_counter_ns()
+    search_term = "water f"
+    results = search(search_term, itemlist)
+    for key, value in results.items():
+        print(key, value)
+    print(f"Search time: {(perf_counter_ns() - tic) / 1_000_000}ms")
+    print()
+
+    tic = perf_counter_ns()
+    for item in client.search(search_term, max_results=50):
+        print(item)
+    print(f"Class Search time: {(perf_counter_ns() - tic) / 1_000_000}ms")

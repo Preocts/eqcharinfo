@@ -21,14 +21,12 @@ class InventoryTableSync:
 
         self.log = logging.getLogger(__name__)
         self.inventorydb = InventoryDB(database_connection)
-        self.inventories = CharacterInventoryClient()
 
     def process_inventory(self, character_name: str, contents: str) -> None:
         """Processes an inventory file"""
-        self.inventories.load_from_string(contents, character_name)
+        inventory = CharacterInventoryClient(character_name)
+        inventory.load_from_string(contents)
 
         self.inventorydb.delete_by_charname(character_name)
 
-        self.inventorydb.batch_create(
-            character_name, self.inventories.get_character(character_name)
-        )
+        self.inventorydb.batch_create(character_name, inventory.inventory)

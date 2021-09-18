@@ -12,7 +12,7 @@ FIXTURE_PATTERN = "*.gz"
 FIXTURE_FILE = "./tests/fixtures/itemlist.gz"
 
 
-@pytest.fixture(scope="function", name="client")
+@pytest.fixture(scope="session", name="client")
 def fixture_client() -> Generator[LucyItemClient, None, None]:
     """Create client fixture with mocked locations"""
     config = load_config()
@@ -23,7 +23,7 @@ def fixture_client() -> Generator[LucyItemClient, None, None]:
             yield client
 
 
-@pytest.fixture(scope="function", name="loadedclient")
+@pytest.fixture(scope="session", name="loadedclient")
 def fixture_loadedclient(
     client: LucyItemClient,
 ) -> Generator[LucyItemClient, None, None]:
@@ -51,6 +51,7 @@ def test_iter(loadedclient: LucyItemClient) -> None:
 
     for item in loadedclient:
         assert isinstance(item, LucyItem)
+        break
 
 
 def test_get(loadedclient: LucyItemClient) -> None:

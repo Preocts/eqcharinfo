@@ -26,6 +26,11 @@ def fixture_loadedclient() -> Generator[CharacterInventoryClient, None, None]:
     yield client
 
 
+def test_check_name(client: CharacterInventoryClient) -> None:
+    """What's a name"""
+    assert client.character_name == NAME
+
+
 def test_load_file(client: CharacterInventoryClient) -> None:
     """Load the file, assert some basic rules"""
     client.load_from_file(MOCKFILE)

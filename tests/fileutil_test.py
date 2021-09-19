@@ -22,7 +22,8 @@ def test_most_recent() -> None:
         os.remove(filename)
 
 
-def test_most_recent_raise() -> None:
-    """That's no moon"""
+def test_raise_directory() -> None:
+    """That's no moon (raise if not directory)"""
+    path = Path(__file__)
     with pytest.raises(ValueError):
-        fileutil.most_recent(__file__, "")
+        fileutil._raise_directory(path)

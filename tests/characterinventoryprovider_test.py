@@ -61,6 +61,12 @@ def test_get_character_slots(provider: CIP) -> None:
         assert isinstance(slot, InventorySlot)
 
 
+def test_get_character_not_found(provider: CIP) -> None:
+    """Raise when character isn't found"""
+    with pytest.raises(ValueError):
+        provider.get_character_slots("NotThere")
+
+
 def test_get_characters(provider: CIP) -> None:
     """Pull list of loaded characters"""
     provider.load_all_characters()

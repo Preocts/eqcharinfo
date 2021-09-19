@@ -15,4 +15,10 @@ def fixture_client() -> Generator[CharacterClient, None, None]:
     config = load_config()
     config["CHARACTERS"]["file_path"] = MOCKPATH
     client = CharacterClient(config)
+    client.init_client()
     yield client
+
+
+def test_placeholder(client: CharacterClient) -> None:
+    """Placeholder for future dev"""
+    assert client

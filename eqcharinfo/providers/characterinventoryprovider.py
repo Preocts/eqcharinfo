@@ -27,6 +27,10 @@ class CharacterInventoryProvider:
 
         self._characters: dict[str, list[InventorySlot]] = {}
 
+    def __len__(self) -> int:
+        """Number of characters loaded"""
+        return len(self._characters)
+
     @property
     def characters(self) -> list[str]:
         """List of loaded characters"""

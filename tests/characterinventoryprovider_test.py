@@ -22,7 +22,7 @@ def fixture_provider() -> Generator[CIP, None, None]:
 
 
 def test_character_file_list(provider: CIP) -> None:
-    """Find text fixtures"""
+    """Load file list"""
     result = provider.character_file_list()
     assert len(result)
     assert MOCKCHARFILE in [file.name for file in result]
@@ -44,6 +44,7 @@ def test_load_all_characters(provider: CIP) -> None:
     provider.load_all_characters()
     assert provider.characters
     assert MOCKCHAR in provider.characters
+    assert len(provider)
 
 
 def test_empty_without_load(provider: CIP) -> None:

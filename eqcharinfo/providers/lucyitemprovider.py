@@ -33,6 +33,10 @@ class LucyItemProvider:
         for item in self._lucyitems:
             yield item
 
+    def __len__(self) -> int:
+        """Return # of loaded items"""
+        return len(self._lucyitems)
+
     @property
     def lucyitems(self) -> list[LucyItem]:
         """Returns list of LucyItems, will load from recent if not loaded"""

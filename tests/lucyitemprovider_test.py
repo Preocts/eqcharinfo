@@ -30,11 +30,11 @@ def test_load_from_recent(provider: LucyItemProvider) -> None:
     assert provider.lucyitems
 
 
-def test_load_from_file(provider: LucyItemProvider) -> None:
-    """Load specific file"""
+def test_load_from_file_and_test_len(provider: LucyItemProvider) -> None:
+    """Load specific file and test len()"""
 
     provider.load_from_file(FIXTURE_FILE)
-    assert provider.lucyitems
+    assert len(provider)
 
 
 def test_get_list_no_load(provider: LucyItemProvider) -> None:

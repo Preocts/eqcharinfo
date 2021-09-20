@@ -14,10 +14,10 @@ MOCKNAME = "mockchar"
 
 NUMBER_OF_MOCK_CHAR = 2
 
-# Mock character inventories have multiple matches for these
+# All mock character inventories have multiple matches for these
 SEARCH_TERM = "Round Cut"
 
-# Mock character inventories have this in more than one slot
+# MOCKNAME inventories have this in more than one slot
 SEARCH_ID = "37818"
 SEARCH_NAME = "Round Cut Peridot"
 SEARCH_SLOTS = {
@@ -76,4 +76,6 @@ def test_get_slots_character(client: CharacterClient) -> None:
 
 def test_get_slots_all(client: CharacterClient) -> None:
     """Returns list of slots by character name with given item from all characters"""
-    ...
+    result = client.get_slots_all(SEARCH_ID)
+    assert len(result) == NUMBER_OF_MOCK_CHAR
+    assert all([character for character in result])

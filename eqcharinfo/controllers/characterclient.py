@@ -58,6 +58,13 @@ class CharacterClient:
         results = [slot for slot in slots if slot.id == item_id]
         return self._render_specific_search_results(results)
 
+    def get_slots_all(self, item_id: str) -> dict[str, list[SpecificSearchResult]]:
+        """By character name: list of item results found in character"""
+        result: dict[str, list[SpecificSearchResult]] = {}
+        for character in self.character_client.characters:
+            result[character] = self.get_slots_character(character, item_id)
+        return result
+
     @staticmethod
     def _render_specific_search_results(
         items: list[InventorySlot],

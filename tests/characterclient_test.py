@@ -11,7 +11,23 @@ from eqcharinfo.utils.runtime_loader import load_config
 
 MOCKPATH = "./tests/fixtures"
 MOCKNAME = "mockchar"
+
 NUMBER_OF_MOCK_CHAR = 2
+
+# Mock character inventories have multiple matches for these
+SEARCH_TERM = "Round Cut"
+
+# Mock character inventories have this in more than one slot
+SEARCH_ID = "37818"
+SEARCH_NAME = "Round Cut Peridot"
+SEARCH_SLOTS = {
+    "Ear-Slot1",
+    "Face-Slot3",
+    "Ear-Slot1",
+    "Neck-Slot1",
+    "Fingers-Slot1",
+    "Fingers-Slot1",
+}
 
 
 @pytest.fixture(scope="function", name="client")
@@ -37,21 +53,25 @@ def test_character_list(client: CharacterClient) -> None:
 
 def test_search_character(client: CharacterClient) -> None:
     """Returns list of possible items from character"""
-    result = client.search_character(MOCKNAME, "Round Cut")
+    result = client.search_character(MOCKNAME, SEARCH_TERM)
     assert result
-    assert "Round Cut" in result[-1].name
+    assert SEARCH_TERM in result[-1].name
 
 
 def test_search_all(client: CharacterClient) -> None:
     """Returns list of possible items from all characters"""
-    result = client.search_all("Round Cut")
+    result = client.search_all(SEARCH_TERM)
     assert result
-    assert "Round Cut" in result[-1].name
+    assert SEARCH_TERM in result[-1].name
 
 
 def test_get_slots_character(client: CharacterClient) -> None:
     """Returns list of slots with given item from character"""
-    ...
+    result = client.get_slots_character(MOCKNAME, SEARCH_ID)
+    assert result
+
+    slots = set([r.location for r in result])
+    assert not slots - SEARCH_SLOTS
 
 
 def test_get_slots_all(client: CharacterClient) -> None:

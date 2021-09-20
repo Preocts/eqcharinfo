@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class SearchResult:
+class GeneralSearchResult:
     """Empty model of a search result"""
 
     id: str

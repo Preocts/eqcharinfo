@@ -37,12 +37,26 @@ class CharacterClient:
         slots = self.character_client.get_character_slots(character_name)
         search_items = {slot.name: slot.id for slot in slots}
         search = fuzzy_search.search(search_string, search_items, self.max_results)
+        return self._render_general_search_results(search)
 
+    def search_all(self, search_string: str) -> list[SearchResult]:
+        """Searches all characters for best match of search_string"""
+        search_items: dict[str, str] = {}
+        for character in self.character_client.characters:
+            slots = self.character_client.get_character_slots(character)
+            search_items.update({slot.name: slot.id for slot in slots})
+        search = fuzzy_search.search(search_string, search_items, self.max_results)
+        return self._render_general_search_results(search)
+
+    @staticmethod
+    def _render_general_search_results(
+        search_results: dict[str, str]
+    ) -> list[SearchResult]:
+        """Internal use: Generate general search return value"""
         results: list[SearchResult] = []
-        for result_name, result_id in search.items():
+        for result_name, result_id in search_results.items():
             results.append(
                 SearchResult(
-                    character=character_name,
                     id=result_id,
                     name=result_name,
                     lucylink="TDB",

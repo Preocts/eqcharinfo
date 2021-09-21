@@ -39,9 +39,7 @@ class LucyItemProvider:
 
     @property
     def lucyitems(self) -> list[LucyItem]:
-        """Returns list of LucyItems, will load from recent if not loaded"""
-        if not self._lucyitems:
-            self.load_from_recent()
+        """Returns list of LucyItems"""
         return list(self._lucyitems)
 
     def load_from_file(self, filepath: str) -> None:

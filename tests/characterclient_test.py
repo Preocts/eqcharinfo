@@ -40,11 +40,6 @@ def fixture_client() -> Generator[CharacterClient, None, None]:
     yield client
 
 
-def test_placeholder(client: CharacterClient) -> None:
-    """Placeholder for future dev"""
-    assert client
-
-
 def test_character_list(client: CharacterClient) -> None:
     """Pull list of loaded characters"""
     assert len(client.character_list()) == NUMBER_OF_MOCK_CHAR
@@ -54,22 +49,18 @@ def test_character_list(client: CharacterClient) -> None:
 def test_search_character(client: CharacterClient) -> None:
     """Returns list of possible items from character"""
     result = client.search_character(MOCKNAME, SEARCH_TERM)
-    assert result
     assert SEARCH_TERM in result[-1].name
 
 
 def test_search_all(client: CharacterClient) -> None:
     """Returns list of possible items from all characters"""
     result = client.search_all(SEARCH_TERM)
-    assert result
     assert SEARCH_TERM in result[-1].name
 
 
 def test_get_slots_character(client: CharacterClient) -> None:
     """Returns list of slots with given item from character"""
     result = client.get_slots_character(MOCKNAME, SEARCH_ID)
-    assert result
-
     slots = set([r.location for r in result])
     assert not slots - SEARCH_SLOTS
 
@@ -77,5 +68,4 @@ def test_get_slots_character(client: CharacterClient) -> None:
 def test_get_slots_all(client: CharacterClient) -> None:
     """Returns list of slots by character name with given item from all characters"""
     result = client.get_slots_all(SEARCH_ID)
-    assert len(result) == NUMBER_OF_MOCK_CHAR
     assert all([character for character in result])

@@ -98,12 +98,3 @@ class CharacterClient:
                 )
             )
         return results
-
-    # def search(self, search_string: str, max_results: int = 50) -> List[Inventory]:
-    #     """Searches a character's inventory"""
-    #     search_items = {inv.name: inv.id for inv in self._inventory.values()}
-    #     result = fuzzy_search.search(search_string, search_items, max_results)
-    #     found: List[Inventory] = []
-    #     for id in result.values():
-    #         found.extend([slot for slot in self._inventory.values() if slot.id == id])
-    #     return found

@@ -6,6 +6,7 @@ from eqcharinfo.models import GeneralSearchResult
 from eqcharinfo.models import InventorySlot
 from eqcharinfo.models import SpecificSearchResult
 from eqcharinfo.providers import CharacterInventoryProvider
+from eqcharinfo.providers import LucyItemProvider
 from eqcharinfo.utils import fuzzy_search
 
 
@@ -13,9 +14,10 @@ class CharacterClient:
     """Controller for accessing character inventory data"""
 
     # TODO : We should pull LucyItemClient in composition here for URL links
-    def __init__(self, config: ConfigParser) -> None:
+    def __init__(self, config: ConfigParser, lucy_provider: LucyItemProvider) -> None:
         """Controller for accessing character inventory data"""
         self.log = logging.getLogger(__name__)
+        self.lucy_provider = lucy_provider
 
         self.character_provider = CharacterInventoryProvider(config["CHARACTERS"])
         self.max_results = config["DEFAULT"].getint("max_search_results", 10)
@@ -65,36 +67,37 @@ class CharacterClient:
             result[character] = self.get_slots_character(character, item_id)
         return result
 
-    @staticmethod
     def _render_specific_search_results(
+        self,
         items: list[InventorySlot],
     ) -> list[SpecificSearchResult]:
         """Internal use: Generate specific search resturn value"""
         results: list[SpecificSearchResult] = []
         for item in items:
+            lucylink = self.lucy_provider.get_by_id(item.id)
             results.append(
                 SpecificSearchResult(
                     id=item.id,
                     name=item.name,
-                    lucylink="TBD",
+                    lucylink=lucylink.lucylink if lucylink else "",
                     location=item.location,
                     count=item.count,
                 )
             )
         return results
 
-    @staticmethod
     def _render_general_search_results(
-        search_results: dict[str, str]
+        self, search_results: dict[str, str]
     ) -> list[GeneralSearchResult]:
         """Internal use: Generate general search return value"""
         results: list[GeneralSearchResult] = []
         for result_name, result_id in search_results.items():
+            lucylink = self.lucy_provider.get_by_id(result_id)
             results.append(
                 GeneralSearchResult(
                     id=result_id,
                     name=result_name,
-                    lucylink="TDB",
+                    lucylink=lucylink.lucylink if lucylink else "",
                 )
             )
         return results

@@ -7,6 +7,7 @@ from typing import Generator
 import pytest
 
 from eqcharinfo.controllers import CharacterClient
+from eqcharinfo.providers import LucyItemProvider
 from eqcharinfo.utils.runtime_loader import load_config
 
 MOCKPATH = "./tests/fixtures"
@@ -31,11 +32,13 @@ SEARCH_SLOTS = {
 
 
 @pytest.fixture(scope="function", name="client")
-def fixture_client() -> Generator[CharacterClient, None, None]:
+def fixture_client(
+    filled_lucy_provider: LucyItemProvider,
+) -> Generator[CharacterClient, None, None]:
     """Create fixture client"""
     config = load_config()
     config["CHARACTERS"]["file_path"] = MOCKPATH
-    client = CharacterClient(config)
+    client = CharacterClient(config, filled_lucy_provider)
     client.init_client()
     yield client
 
@@ -50,6 +53,7 @@ def test_search_character(client: CharacterClient) -> None:
     """Returns list of possible items from character"""
     result = client.search_character(MOCKNAME, SEARCH_TERM)
     assert SEARCH_TERM in result[-1].name
+    assert all([r.lucylink for r in result])
 
 
 def test_search_all(client: CharacterClient) -> None:

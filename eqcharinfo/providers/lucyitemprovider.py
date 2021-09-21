@@ -5,6 +5,7 @@ import logging
 from configparser import SectionProxy
 from pathlib import Path
 from typing import Generator
+from typing import Optional
 
 from eqcharinfo.models.lucyitem import LucyItem
 from eqcharinfo.utils.fileutil import most_recent
@@ -25,12 +26,11 @@ class LucyItemProvider:
         self.log = logging.getLogger(__name__)
         self.glob_pattern = config_section["glob_pattern"]
         self.file_path = config_section["file_path"]
-
-        self._lucyitems: list[LucyItem] = []
+        self._lucyitems: dict[str, LucyItem] = {}
 
     def __iter__(self) -> Generator[LucyItem, None, None]:
         """Allow iteration through provider"""
-        for item in self._lucyitems:
+        for item in self._lucyitems.values():
             yield item
 
     def __len__(self) -> int:
@@ -40,7 +40,11 @@ class LucyItemProvider:
     @property
     def lucyitems(self) -> list[LucyItem]:
         """Returns list of LucyItems"""
-        return list(self._lucyitems)
+        return list(self._lucyitems.values())
+
+    def get_by_id(self, item_id: str) -> Optional[LucyItem]:
+        """Returns by id or returns None"""
+        return self._lucyitems.get(item_id)
 
     def load_from_file(self, filepath: str) -> None:
         """Loads item data from specific file"""
@@ -59,10 +63,8 @@ class LucyItemProvider:
             dictreader = csv.DictReader(infile)
 
             for row in dictreader:
-                self._lucyitems.append(
-                    LucyItem(
-                        id=row["id"],
-                        name=row["name"],
-                        lucylink=row["lucylink"],
-                    )
+                self._lucyitems[row["id"]] = LucyItem(
+                    id=row["id"],
+                    name=row["name"],
+                    lucylink=row["lucylink"],
                 )

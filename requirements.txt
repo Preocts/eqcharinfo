@@ -4,15 +4,31 @@
 #
 #    pip-compile --output-file=requirements.txt requirements.in
 #
+asgiref==3.4.1
+    # via uvicorn
 certifi==2021.5.30
     # via requests
 charset-normalizer==2.0.6
     # via requests
+click==8.0.1
+    # via uvicorn
+fastapi==0.68.1
+    # via -r requirements.in
+h11==0.12.0
+    # via uvicorn
 idna==3.2
     # via requests
+pydantic==1.8.2
+    # via fastapi
 requests==2.26.0
     # via -r requirements.in
-types-requests==2.25.6
+starlette==0.14.2
+    # via fastapi
+types-requests==2.25.8
     # via -r requirements.in
+typing-extensions==3.10.0.2
+    # via pydantic
 urllib3==1.26.6
     # via requests
+uvicorn==0.15.0
+    # via -r requirements.in

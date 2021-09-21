@@ -24,6 +24,10 @@ def test_most_recent() -> None:
 
 def test_raise_directory() -> None:
     """That's no moon (raise if not directory)"""
-    path = Path(__file__)
     with pytest.raises(ValueError):
-        fileutil._raise_directory(path)
+        fileutil._raise_directory(__file__)
+
+
+def test_empty_file_list() -> None:
+    """If the target directory doesn't exist, return no files"""
+    assert not fileutil.get_files_by_pattern("Notthere", "*")

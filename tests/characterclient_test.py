@@ -7,6 +7,7 @@ from typing import Generator
 import pytest
 
 from eqcharinfo.controllers import CharacterClient
+from eqcharinfo.providers import LucyItemProvider
 from eqcharinfo.utils.runtime_loader import load_config
 
 MOCKPATH = "./tests/fixtures"
@@ -31,18 +32,15 @@ SEARCH_SLOTS = {
 
 
 @pytest.fixture(scope="function", name="client")
-def fixture_client() -> Generator[CharacterClient, None, None]:
+def fixture_client(
+    filled_lucy_provider: LucyItemProvider,
+) -> Generator[CharacterClient, None, None]:
     """Create fixture client"""
     config = load_config()
     config["CHARACTERS"]["file_path"] = MOCKPATH
-    client = CharacterClient(config)
+    client = CharacterClient(config, filled_lucy_provider)
     client.init_client()
     yield client
-
-
-def test_placeholder(client: CharacterClient) -> None:
-    """Placeholder for future dev"""
-    assert client
 
 
 def test_character_list(client: CharacterClient) -> None:
@@ -54,22 +52,19 @@ def test_character_list(client: CharacterClient) -> None:
 def test_search_character(client: CharacterClient) -> None:
     """Returns list of possible items from character"""
     result = client.search_character(MOCKNAME, SEARCH_TERM)
-    assert result
     assert SEARCH_TERM in result[-1].name
+    assert all([r.lucylink for r in result])
 
 
 def test_search_all(client: CharacterClient) -> None:
     """Returns list of possible items from all characters"""
     result = client.search_all(SEARCH_TERM)
-    assert result
     assert SEARCH_TERM in result[-1].name
 
 
 def test_get_slots_character(client: CharacterClient) -> None:
     """Returns list of slots with given item from character"""
     result = client.get_slots_character(MOCKNAME, SEARCH_ID)
-    assert result
-
     slots = set([r.location for r in result])
     assert not slots - SEARCH_SLOTS
 
@@ -77,5 +72,4 @@ def test_get_slots_character(client: CharacterClient) -> None:
 def test_get_slots_all(client: CharacterClient) -> None:
     """Returns list of slots by character name with given item from all characters"""
     result = client.get_slots_all(SEARCH_ID)
-    assert len(result) == NUMBER_OF_MOCK_CHAR
     assert all([character for character in result])

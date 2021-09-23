@@ -5,7 +5,7 @@ import pytest
 
 from eqcharinfo.models.inventoryslot import InventorySlot
 from eqcharinfo.providers import CharacterInventoryProvider as CIP
-from eqcharinfo.utils.runtime_loader import load_config
+from eqcharinfo.utils.runtime_loader import RuntimeLoader
 
 MOCKPATH = "./tests/fixtures"
 MOCKCHARFILE = "mockchar-inventory.txt"
@@ -15,7 +15,7 @@ MOCKCHAR = "mockchar"
 @pytest.fixture(scope="function", name="provider")
 def fixture_provider() -> Generator[CIP, None, None]:
     """Create CharacterInventoryProvider fixture"""
-    config = load_config()
+    config = RuntimeLoader().get_config()
     provider = CIP(config["CHARACTERS"])
     provider.file_path = MOCKPATH
     yield provider

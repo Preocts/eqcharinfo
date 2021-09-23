@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pytest
 
 from eqcharinfo.controllers import LucyItemClient
-from eqcharinfo.utils.runtime_loader import load_config
+from eqcharinfo.utils.runtime_loader import RuntimeLoader
 
 FIXTURE_DIR = "./tests/fixtures"
 FIXTURE_PATTERN = "*.gz"
@@ -13,7 +13,7 @@ FIXTURE_PATTERN = "*.gz"
 @pytest.fixture(scope="session", name="client")
 def fixture_client() -> Generator[LucyItemClient, None, None]:
     """Create client fixture"""
-    config = load_config()
+    config = RuntimeLoader().get_config()
     config["LUCYITEMS"]["glob_pattern"] = FIXTURE_PATTERN
     config["LUCYITEMS"]["file_path"] = FIXTURE_DIR
     client = LucyItemClient(config)

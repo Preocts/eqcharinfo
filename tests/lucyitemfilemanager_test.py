@@ -8,10 +8,10 @@ from typing import Generator
 import pytest
 
 from eqcharinfo.providers.lucyitemfilemanager import LucyItemFileManager
-from eqcharinfo.utils import runtime_loader
+from eqcharinfo.utils.runtime_loader import RuntimeLoader
 
 TEST_URL = "https://github.com/Preocts/eqcharinfo/blob/main/README.md"
-CONFIG = runtime_loader.load_config()["LUCYITEMS"]
+CONFIG = RuntimeLoader().get_config()["LUCYITEMS"]
 
 
 @pytest.fixture(scope="function", name="mockfile")

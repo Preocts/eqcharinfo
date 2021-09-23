@@ -8,7 +8,7 @@ import pytest
 
 from eqcharinfo.controllers import CharacterClient
 from eqcharinfo.providers import LucyItemProvider
-from eqcharinfo.utils.runtime_loader import load_config
+from eqcharinfo.utils.runtime_loader import RuntimeLoader
 
 MOCKPATH = "./tests/fixtures"
 MOCKNAME = "mockchar"
@@ -36,7 +36,7 @@ def fixture_client(
     filled_lucy_provider: LucyItemProvider,
 ) -> Generator[CharacterClient, None, None]:
     """Create fixture client"""
-    config = load_config()
+    config = RuntimeLoader().get_config()
     config["CHARACTERS"]["file_path"] = MOCKPATH
     client = CharacterClient(config, filled_lucy_provider)
     client.init_client()

@@ -68,36 +68,3 @@ def levenshtein_distance(string01: str, string02: str) -> int:
 #     if len(string01) != len(string02):
 #         raise ValueError("Expected equal length strings")
 #     return sum(xi != yi for xi, yi in zip(string01, string02))
-
-
-# Testing testing testing
-if __name__ == "__main__":
-    from time import perf_counter_ns
-    from eqcharinfo.utils import runtime_loader
-    from eqcharinfo.lucyitemclient import LucyItemClient
-
-    config = runtime_loader.load_config()
-    client = LucyItemClient(config["DOWNLOAD-ITEMFILE"])
-    tic = perf_counter_ns()
-    client.load_from_recent()
-    print(f"Load time: {(perf_counter_ns() - tic) / 1_000_000}ms")
-
-    tic = perf_counter_ns()
-    itemlist = {item.name: item.id for item in client.lucyitems}
-    print(f"list time: {(perf_counter_ns() - tic) / 1_000_000}ms")
-
-    print(f"Length of list: {len(itemlist)}")
-    print()
-
-    tic = perf_counter_ns()
-    search_term = "water f"
-    results = search(search_term, itemlist)
-    for key, value in results.items():
-        print(key, value)
-    print(f"Search time: {(perf_counter_ns() - tic) / 1_000_000}ms")
-    print()
-
-    tic = perf_counter_ns()
-    for item in client.search(search_term, max_results=50):
-        print(item)
-    print(f"Class Search time: {(perf_counter_ns() - tic) / 1_000_000}ms")

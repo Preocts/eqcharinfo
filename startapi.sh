@@ -1,2 +1,2 @@
 #!/bin/bash
-uvicorn eqcharinfo.api.api:routes --reload
+uvicorn eqcharinfo.api:routes --reload

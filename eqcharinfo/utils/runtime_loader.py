@@ -1,48 +1,34 @@
 """
 Used to manage all run-time setup operations
 """
-import contextlib
 import logging
 import os
-import sqlite3
 from configparser import ConfigParser
-from sqlite3 import Connection
-from typing import Generator
-
-EQCHARINFO_LOG = os.getenv("EQCHARINFO_LOG", "DEBUG")
-EQCHARDATABASE = os.getenv("EQCHARDATABASE", "eqcharinfo.sqlite3")
-
-log = logging.getLogger(__name__)
+from typing import Optional
 
 
-def add_logger() -> None:
-    """Set a logger, overrides root handlers if already set"""
-    logging.basicConfig(format="%(asctime)s %(message)s", level=EQCHARINFO_LOG)
+class RuntimeLoader:
+    """Manage run-time setup operations"""
 
+    EQCHARINFO_LOG = os.getenv("EQCHARINFO_LOG", "DEBUG")
 
-def load_config() -> ConfigParser:
-    """Loads default config file or file set by EQCHARINFO_CONFIG"""
-    config = ConfigParser()
+    def __init__(self) -> None:
+        self.log = logging.getLogger(__name__)
+        self.config: Optional[ConfigParser] = None
 
-    files = config.read(os.getenv("EQCHARINFO_CONFIG", "appsettings.ini"))
+    def add_logger(self) -> None:
+        """Set a logger, overrides root handlers if already set"""
+        logging.basicConfig(format="%(asctime)s %(message)s", level=self.EQCHARINFO_LOG)
 
-    log.info("Loaded the following config file(s): %s", files)
+    def load_config(self) -> None:
+        """Loads default config file or file set by EQCHARINFO_CONFIG"""
+        self.config = ConfigParser()
+        files = self.config.read(os.getenv("EQCHARINFO_CONFIG", "appsettings.ini"))
+        self.log.info("Loaded the following config file(s): %s", files)
 
-    return config
+    def get_config(self) -> ConfigParser:
+        """Returns config"""
+        if self.config is None:
+            self.load_config()
 
-
-@contextlib.contextmanager
-def load_database(database: str = EQCHARDATABASE) -> Generator[Connection, None, None]:
-    """
-    Connect to sqlite3 database, ensures connection is closed with context manager
-
-    Common Use:
-        with load_database() as dbconnection:
-            ...
-    """
-    try:
-        connection = sqlite3.connect(database=database)
-        yield connection
-
-    finally:
-        connection.close()
+        return self.config  # type: ignore

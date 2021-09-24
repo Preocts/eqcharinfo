@@ -30,7 +30,7 @@ class RouteHandler:
         self.characterclient.init_client()
 
     def get_characters(self) -> dict[str, list[str]]:
-        """"""
+        """Return list of chacarter"""
         self.log.debug("GET requests /characters")
         characters = self.characterclient.character_list()
         self.log.debug("Returning %d characters", len(characters))

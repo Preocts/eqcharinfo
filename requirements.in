@@ -2,3 +2,4 @@ requests
 types-requests
 fastapi
 uvicorn
+jinja2

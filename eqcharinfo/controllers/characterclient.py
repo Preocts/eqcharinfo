@@ -13,7 +13,6 @@ from eqcharinfo.utils import fuzzy_search
 class CharacterClient:
     """Controller for accessing character inventory data"""
 
-    # TODO : We should pull LucyItemClient in composition here for URL links
     def __init__(self, config: ConfigParser, lucy_provider: LucyItemProvider) -> None:
         """Controller for accessing character inventory data"""
         self.log = logging.getLogger(__name__)
@@ -31,6 +30,10 @@ class CharacterClient:
     def character_list(self) -> list[str]:
         """List of loaded characters, can be empty"""
         return self.character_provider.characters
+
+    def get_character_inventory(self, character_name: str) -> list[InventorySlot]:
+        """Return a character's inventory"""
+        return self.character_provider.get_character_slots(character_name)
 
     def search_character(
         self,

@@ -10,13 +10,19 @@ from eqcharinfo import api
 @pytest.fixture(scope="function", name="handler")
 def fixture_handler() -> Generator[MagicMock, None, None]:
     """Mock all calls, assert calling correct handler"""
-    with patch.object(api, "RouteHandler") as mockhandler:
+    with patch.object(api, "handler") as mockhandler:
         yield mockhandler
 
 
 def test_character_get(handler: MagicMock) -> None:
     """Call correct route"""
-    handler.get_characters = MagicMock
+    handler.get_all_characters = MagicMock()
     api.get_characters()
+    assert handler.get_all_characters.called
 
-    assert handler.get_characters.called
+
+def test_show_inventory(handler: MagicMock) -> None:
+    """Call correct route"""
+    handler.get_inventory = MagicMock()
+    api.show_inventory()
+    assert handler.get_inventory.called

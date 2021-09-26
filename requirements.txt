@@ -24,11 +24,11 @@ requests==2.26.0
     # via -r requirements.in
 starlette==0.14.2
     # via fastapi
-types-requests==2.25.8
+types-requests==2.25.9
     # via -r requirements.in
 typing-extensions==3.10.0.2
     # via pydantic
-urllib3==1.26.6
+urllib3==1.26.7
     # via requests
 uvicorn==0.15.0
     # via -r requirements.in

@@ -1,0 +1,30 @@
+<html>
+
+<body>
+    <h1 class="title">Title here</h1>
+    {% for character_name, inventory in characters.items() %}
+    <hr />
+    <h2 class="character_name">{{ character_name }}</h2>
+    <table class="character_inventory">
+        <tr>
+            <th>Location</th>
+            <th>Name</th>
+            <th>ID</th>
+            <th>Count</th>
+            <th>Slots</th>
+        </tr>
+        {% for slot in inventory %}
+        <tr>
+            <td>{{ slot.location }}</td>
+            <td>{{ slot.name }}</td>
+            <td>{{ slot.id }}</td>
+            <td>{{ slot.count }}</td>
+            <td>{{ slot.slots }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endfor %}
+
+</body>
+
+</html>

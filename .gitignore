@@ -2,8 +2,7 @@
 temp_*
 .vscode/
 downloads/
-charfiles/
-eqcharinfo.sqlite3
+characters/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

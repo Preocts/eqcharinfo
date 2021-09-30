@@ -12,6 +12,7 @@
             <th>ID</th>
             <th>Count</th>
             <th>Slots</th>
+            <th>Lucy Link</th>
         </tr>
         {% for slot in inventory %}
         <tr>
@@ -20,6 +21,7 @@
             <td>{{ slot.id }}</td>
             <td>{{ slot.count }}</td>
             <td>{{ slot.slots }}</td>
+            <td><a href="{{ slot.lucylink }}" target="_blank">{{ slot.lucylink }}</a></td>
         </tr>
         {% endfor %}
     </table>

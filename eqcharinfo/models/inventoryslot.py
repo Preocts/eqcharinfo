@@ -9,3 +9,4 @@ class InventorySlot:
     id: str
     count: str
     slots: str
+    lucylink: str = ""

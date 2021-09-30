@@ -18,7 +18,7 @@ coverage==5.5
     # via -r requirements-dev.in
 distlib==0.3.3
     # via virtualenv
-filelock==3.0.12
+filelock==3.2.0
     # via
     #   tox
     #   virtualenv

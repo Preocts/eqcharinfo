@@ -33,7 +33,15 @@ class CharacterClient:
 
     def get_character_inventory(self, character_name: str) -> list[InventorySlot]:
         """Return a character's inventory"""
-        return self.character_provider.get_character_slots(character_name)
+        slots = [
+            slot
+            for slot in self.character_provider.get_character_slots(character_name)
+            if slot.name != "Empty"
+        ]
+        for slot in slots:
+            lucyitem = self.lucy_provider.get_by_id(slot.id)
+            slot.lucylink = lucyitem.lucylink if lucyitem is not None else ""
+        return slots
 
     def search_character(
         self,

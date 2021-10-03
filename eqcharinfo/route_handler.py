@@ -40,6 +40,7 @@ class RouteHandler:
 
     def get_inventory(self, charnames: list[str]) -> dict[str, list[InventorySlot]]:
         """Return inventory of character"""
+        charnames = self.get_all_characters() if not charnames else charnames
         self.log.debug("GET request: inventory '%s'", charnames)
         inventory = {
             char: self.characterclient.get_character_inventory(char)

@@ -1,0 +1,60 @@
+<html>
+
+<head>
+    <script>
+        function posEnd(end) {
+            var len = end.value.length;
+
+            // Mostly for Web Browsers
+            if (end.setSelectionRange) {
+                end.focus();
+                end.setSelectionRange(len, len);
+            } else if (end.createTextRange) {
+                var t = end.createTextRange();
+                t.collapse(true);
+                t.moveEnd('character', len);
+                t.moveStart('character', len);
+                t.select();
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <h1 class="title">Search Character(s)</h1>
+    <form action="/character_search" target="_self" autocomplete="off">
+        <input type="text" id="search" class="search_input" autofocus name="search_string" value="{{ prior_search }}"
+            onfocus="posEnd(this)" />
+        {% for character_name in characters %}
+        {% if character_name not in prior_charnames and prior_search %}
+        <input type="checkbox" class="character_select" name="charnames" value="{{ character_name }}">
+        {% else %}
+        <input type="checkbox" class="character_select" name="charnames" value="{{ character_name }}" checked>
+        {% endif %}
+        <label for="charnames">{{ character_name }}</label>
+        {% endfor %}
+        <input type="submit" id="submit" name="submit" value="Search">
+        <a href="/character_search" id="reset_link">Reset Search</a>
+    </form>
+    {% if prior_search %}
+    {% for character_name, search in results.items() %}
+    <h3>Results for {{ character_name }}</h3>
+    <table>
+        <tr>
+            <th>Item ID</th>
+            <th>Name</th>
+            <th>Lucy Link</th>
+        </tr>
+        {% for item in search %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.name }}</td>
+            <td><a href="{{ item.lucylink }}" target="_blank">{{ item.lucylink }}</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endfor %}
+    {% endif %}
+</body>
+
+</html>

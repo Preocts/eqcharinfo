@@ -4,6 +4,7 @@ import logging
 
 from eqcharinfo.controllers import CharacterClient
 from eqcharinfo.controllers import LucyItemClient
+from eqcharinfo.models import GeneralSearchResult
 from eqcharinfo.models import InventorySlot
 from eqcharinfo.utils.runtime_loader import RuntimeLoader
 
@@ -30,23 +31,31 @@ class RouteHandler:
         self.lucyclient.init_client()
         self.characterclient.init_client()
 
-    def get_all_characters(self) -> dict[str, list[str]]:
+    def get_all_characters(self) -> list[str]:
         """Return list of chacarter"""
         self.log.debug("GET requests /characters")
         characters = self.characterclient.character_list()
         self.log.debug("Returning %d characters", len(characters))
-        return {"characters": characters}
+        return characters
 
     def get_inventory(self, charnames: list[str]) -> dict[str, list[InventorySlot]]:
         """Return inventory of character"""
         self.log.debug("GET request: inventory '%s'", charnames)
-        charnames = (
-            self.get_all_characters()["characters"] if not charnames else charnames
-        )
-
         inventory = {
             char: self.characterclient.get_character_inventory(char)
             for char in charnames
         }
-
         return inventory
+
+    def character_search(
+        self,
+        charnames: list[str],
+        search: str,
+    ) -> dict[str, list[GeneralSearchResult]]:
+        """Return search results of character(s)"""
+        charnames = self.get_all_characters() if not charnames else charnames
+        search_results = {
+            char: self.characterclient.search_character(char, search)
+            for char in charnames
+        }
+        return search_results

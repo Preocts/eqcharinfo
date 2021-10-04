@@ -16,10 +16,16 @@ jinenv = Environment(
 routes = FastAPI()
 
 
-@routes.get("/characters", response_class=HTMLResponse)
+@routes.get("/", response_class=HTMLResponse)
+def get_index() -> str:
+    template = jinenv.get_template("index.html")
+    return template.render()
+
+
+@routes.get("/character_list", response_class=HTMLResponse)
 def get_characters() -> str:
     """List loaded characters"""
-    template = jinenv.get_template("characterlist.html")
+    template = jinenv.get_template("character_list.html")
     return template.render(characters=handler.get_all_characters())
 
 

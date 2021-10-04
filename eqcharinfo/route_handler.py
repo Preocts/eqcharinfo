@@ -40,7 +40,8 @@ class RouteHandler:
 
     def get_inventory(self, charnames: list[str]) -> dict[str, list[InventorySlot]]:
         """Return inventory of character"""
-        charnames = self.get_all_characters() if not charnames else charnames
+        # TODO: Do we want this to default to all characters?
+        # charnames = self.get_all_characters() if not charnames else charnames
         self.log.debug("GET request: inventory '%s'", charnames)
         inventory = {
             char: self.characterclient.get_character_inventory(char)
@@ -54,7 +55,8 @@ class RouteHandler:
         search: str,
     ) -> dict[str, list[GeneralSearchResult]]:
         """Return search results of character(s)"""
-        charnames = self.get_all_characters() if not charnames else charnames
+        # TODO: Do we want this to default to all characters?
+        # charnames = self.get_all_characters() if not charnames else charnames
         search_results = {
             char: self.characterclient.search_character(char, search)
             for char in charnames

@@ -1,4 +1,4 @@
-.PHONY: init dev-install update clean-pyc clean-tests
+.PHONY: init dev-install update clean-pyc clean-tests dead-code
 
 init:
 	pip install --upgrade pip setuptools wheel pip-tools
@@ -30,3 +30,8 @@ clean-tests: ## Removes tox, coverage, and pytest artifacts
 	rm -rf .coverage
 	rm -f code_lines.txt
 	find . -name '.pytest_cache' -exec rm -rf {} +
+
+dead-code: ## Runs coverage against top-level to find unused code
+	coverage erase
+	coverage run -m pytest tests/route_handler_test.py
+	coverage report -m

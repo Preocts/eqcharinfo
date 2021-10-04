@@ -17,6 +17,11 @@ def fixture_handler() -> Generator[MagicMock, None, None]:
         yield handler
 
 
+def test_get_index(handler: MagicMock) -> None:
+    """Call correct route"""
+    api.get_index()
+
+
 def test_character_get(handler: MagicMock) -> None:
     """Call correct route"""
     api.get_characters()

@@ -1,11 +1,16 @@
 <html>
 
 <body>
-    <h1 class="title">Title here</h1>
-    <table class="overview">
+    <h1>Title here</h1>
+    <table>
+        <tr>
+            <th>Charactar Name</th>
+            <th>TDB</th>
+        </tr>
         {% for character in characters %}
         <tr>
-            <td>{{ character }}</td>
+            {% set urllink = '/character_inventory?charnames=' + character %}
+            <td><a href="{{ urllink }}">{{ character }}</a></td>
             <td>Placeholder for stuff</td>
         </tr>
         {% endfor %}

@@ -17,20 +17,20 @@ routes = FastAPI()
 
 
 @routes.get("/", response_class=HTMLResponse)
-def get_index() -> str:
+def index() -> str:
     template = jinenv.get_template("index.html")
     return template.render()
 
 
 @routes.get("/character_list", response_class=HTMLResponse)
-def get_characters() -> str:
+def character_list() -> str:
     """List loaded characters"""
     template = jinenv.get_template("character_list.html")
     return template.render(characters=handler.get_all_characters())
 
 
 @routes.get("/character_inventory", response_class=HTMLResponse)
-def show_inventory(charnames: list[str] = Query([])) -> str:
+def character_inventory(charnames: list[str] = Query([])) -> str:
     """Show inventory of one or more characters"""
     template = jinenv.get_template("character_inventory.html")
     return template.render(characters=handler.get_inventory(charnames))

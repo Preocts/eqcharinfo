@@ -12,13 +12,13 @@ charset-normalizer==2.0.6
     # via requests
 click==8.0.1
     # via uvicorn
-fastapi==0.68.1
+fastapi==0.68.2
     # via -r requirements.in
 h11==0.12.0
     # via uvicorn
 idna==3.2
     # via requests
-jinja2==3.0.1
+jinja2==3.0.2
     # via -r requirements.in
 markupsafe==2.0.1
     # via jinja2

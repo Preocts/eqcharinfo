@@ -4,20 +4,24 @@
 #
 #    pip-compile --output-file=requirements.txt requirements.in
 #
+anyio==3.3.3
+    # via starlette
 asgiref==3.4.1
     # via uvicorn
-certifi==2021.5.30
+certifi==2021.10.8
     # via requests
-charset-normalizer==2.0.6
+charset-normalizer==2.0.7
     # via requests
-click==8.0.1
+click==8.0.3
     # via uvicorn
-fastapi==0.68.2
+fastapi==0.70.0
     # via -r requirements.in
 h11==0.12.0
     # via uvicorn
 idna==3.2
-    # via requests
+    # via
+    #   anyio
+    #   requests
 jinja2==3.0.2
     # via -r requirements.in
 markupsafe==2.0.1
@@ -26,9 +30,11 @@ pydantic==1.8.2
     # via fastapi
 requests==2.26.0
     # via -r requirements.in
-starlette==0.14.2
+sniffio==1.2.0
+    # via anyio
+starlette==0.16.0
     # via fastapi
-types-requests==2.25.9
+types-requests==2.25.10
     # via -r requirements.in
 typing-extensions==3.10.0.2
     # via pydantic

@@ -5,9 +5,9 @@
 </head>
 
 <body>
-    <form action="/character_upload" target="_self" autocomplete="off">
-        <textarea id="drop_zone">Drop files here</textarea>
-        <input type="submit" id="submit" name="submit" value="Upload Character" />
+    <form action="/character_upload" target="_self" autocomplete="off" method="post" enctype="text/plain">
+        <textarea id="char_file" name="char_file">Drop files here</textarea>
+        <input type="submit" id="submit" value="Upload Character" />
         <a href="/character_upload" id="reset_link">Reset</a>
     </form>
 </body>
@@ -19,7 +19,7 @@
         var files = evt.dataTransfer.files; // FileList object.
         var reader = new FileReader();
         reader.onload = function (event) {
-            document.getElementById('drop_zone').value = event.target.result;
+            document.getElementById('char_file').value = event.target.result;
         }
         reader.readAsText(files[0], "UTF-8");
     }
@@ -31,7 +31,7 @@
     }
 
     // Setup the dnd listeners.
-    var dropZone = document.getElementById('drop_zone');
+    var dropZone = document.getElementById('char_file');
     dropZone.addEventListener('dragover', handleDragOver, false);
     dropZone.addEventListener('drop', handleFileSelect, false);
 </script>

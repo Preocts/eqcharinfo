@@ -1,39 +1,43 @@
 <html>
 
 <head>
-    <title></title>
+    <title>Character Upload</title>
 </head>
 
 <body>
-    <form action="/character_upload" target="_self" autocomplete="off" method="post" enctype="text/plain">
-        <textarea id="char_file" name="char_file">Drop files here</textarea>
+    <div id="dropContainer" style="border:1px solid black;height:100px;">
+        Drop File Here
+    </div>
+    <form action="/character_upload" target="_self" autocomplete="off" method="post" enctype="multipart/form-data">
+        <input type="file" name="charfile" id="fileInput">
         <input type="submit" id="submit" value="Upload Character" />
         <a href="/character_upload" id="reset_link">Reset</a>
     </form>
+    {% if data %}
+    <hr />
+    <h1>{{ data.filename }}</h1>
+    <pre>{{ data.content }}</pre>
+    {% endif %}
 </body>
 <script>
-    function handleFileSelect(evt) {
-        evt.stopPropagation();
+    // dragover and dragenter events need to have 'preventDefault' called
+    // in order for the 'drop' event to register.
+    // See: https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/Drag_operations#droptargets
+    dropContainer.ondragover = dropContainer.ondragenter = function (evt) {
         evt.preventDefault();
+    };
 
-        var files = evt.dataTransfer.files; // FileList object.
-        var reader = new FileReader();
-        reader.onload = function (event) {
-            document.getElementById('char_file').value = event.target.result;
-        }
-        reader.readAsText(files[0], "UTF-8");
-    }
+    dropContainer.ondrop = function (evt) {
+        // pretty simple -- but not for IE :(
+        fileInput.files = evt.dataTransfer.files;
 
-    function handleDragOver(evt) {
-        evt.stopPropagation();
+        // If you want to use some of the dropped files
+        const dT = new DataTransfer();
+        dT.items.add(evt.dataTransfer.files[0]);
+        fileInput.files = dT.files;
+
         evt.preventDefault();
-        evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
-    }
-
-    // Setup the dnd listeners.
-    var dropZone = document.getElementById('char_file');
-    dropZone.addEventListener('dragover', handleDragOver, false);
-    dropZone.addEventListener('drop', handleFileSelect, false);
+    };
 </script>
 
 </html>

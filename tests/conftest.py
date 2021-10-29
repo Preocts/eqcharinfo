@@ -6,6 +6,7 @@ import pytest
 
 from eqcharinfo import route_handler
 from eqcharinfo.controllers import CharacterClient
+from eqcharinfo.controllers import CharfileIngest
 from eqcharinfo.controllers import LucyItemClient
 from eqcharinfo.providers import CharacterInventoryProvider
 from eqcharinfo.providers import LucyItemProvider
@@ -56,6 +57,15 @@ def fixture_filled_character_provider(
     provider = CharacterInventoryProvider(config["CHARACTERS"])
     provider.load_all_characters()
     yield provider
+
+
+@pytest.fixture(scope="function", name="charfile_ingest")
+def fixture_charfile_ingest(
+    config: ConfigParser,
+) -> Generator[CharfileIngest, None, None]:
+    """Creates a fixture for Charfile ingest"""
+    controller = CharfileIngest(config)
+    yield controller
 
 
 @pytest.fixture(scope="session", name="routes")

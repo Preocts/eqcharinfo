@@ -1,0 +1,10 @@
+Location	Name	ID	Count	Slots
+Charm	Faded Treasure Map	101116	1	6
+Charm-Slot1	Wanderlust Guild Loadstone	53631	1	6
+Ear	Leaf of Blackest Winter	120322	1	6
+Ear-Slot1	Experimental Device	51886	1	6
+Ear-Slot2	Empty	0	0	0
+Head	Terror Infused Linked Coif	120121	1	6
+Head-Slot1	Slice of Veeshan's Scale	51929	1	6
+Head-Slot2	Empty	0	0	0
+Head-Slot3	Empty	0	0	0

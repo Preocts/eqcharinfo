@@ -54,6 +54,5 @@ def character_search(charnames: list[str] = Query([]), search_string: str = "") 
 @routes.get("/character_upload", response_class=HTMLResponse)
 @routes.post("/character_upload", response_class=HTMLResponse)
 def character_upload(char_file: str = Body("")) -> str:
-    print(f"Charfile: {char_file}")
     template = jinenv.get_template("character_upload.html")
-    return template.render()
+    return template.render(data=handler.character_upload(char_file))

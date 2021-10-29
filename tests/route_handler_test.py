@@ -17,6 +17,8 @@ from eqcharinfo import route_handler
 # Provide at least one fixtured character name
 MOCK_CHARNAMES = ["mockchar"]
 
+MOCK_WEBFORM = open("tests/fixtures/mock_webform.txt", "r").read().rstrip("\n")
+
 
 def test_get_all_characters(routes: route_handler.RouteHandler) -> None:
     """Return something"""
@@ -33,3 +35,13 @@ def test_character_search(routes: route_handler.RouteHandler) -> None:
     """Return something"""
     assert not routes.character_search([], "")
     assert routes.character_search(MOCK_CHARNAMES, "s")
+
+
+def test_character_upload_empty(routes: route_handler.RouteHandler) -> None:
+    """Return empty dict"""
+    assert routes.character_upload("") == {}
+
+
+def test_character_upload_full(routes: route_handler.RouteHandler) -> None:
+    """Return something"""
+    assert routes.character_upload(MOCK_WEBFORM)

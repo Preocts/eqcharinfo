@@ -59,7 +59,7 @@ def fixture_filled_character_provider(
     yield provider
 
 
-@pytest.fixture(scope="function", name="charfile_ingest")
+@pytest.fixture(scope="session", name="charfile_ingest")
 def fixture_charfile_ingest(
     config: ConfigParser,
 ) -> Generator[CharfileIngest, None, None]:
@@ -73,6 +73,7 @@ def fixture_routes(
     config: ConfigParser,
     filled_lucy_provider: LucyItemProvider,
     filled_character_provider: CharacterInventoryProvider,
+    charfile_ingest: CharfileIngest,
 ) -> Generator[route_handler.RouteHandler, None, None]:
     """Creates a fixture"""
 
@@ -80,16 +81,19 @@ def fixture_routes(
     lucyclient.lucy_provider = filled_lucy_provider
     characterclient = CharacterClient(config, lucyclient.lucy_provider)
     characterclient.character_provider = filled_character_provider
+    charfileingest = CharfileIngest(config)
 
     # Ensure mocking of all init calls (test these elsewhere)
     # fmt: off
     with patch.object(route_handler, "LucyItemClient"), \
-            patch.object(route_handler, "CharacterClient"):
+            patch.object(route_handler, "CharacterClient"), \
+            patch.object(route_handler, "CharfileIngest"):
 
         routes = route_handler.RouteHandler()
         # Insert the conftest fixtures here
         routes.lucyclient = lucyclient
         routes.characterclient = characterclient
+        routes.charfileingest = charfileingest
 
         yield routes
     # fmt: on

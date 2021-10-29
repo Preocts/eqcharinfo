@@ -38,3 +38,9 @@ def test_character_search(handler: MagicMock) -> None:
     """Call correct route"""
     api.character_search()
     assert handler.character_search.called
+
+
+def test_character_upload(handler: MagicMock) -> None:
+    """Call correct route"""
+    api.character_upload()
+    assert handler.character_upload.called

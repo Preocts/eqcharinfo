@@ -3,6 +3,7 @@ import datetime
 import logging
 
 from eqcharinfo.controllers import CharacterClient
+from eqcharinfo.controllers import CharfileIngest
 from eqcharinfo.controllers import LucyItemClient
 from eqcharinfo.models import GeneralSearchResult
 from eqcharinfo.models import InventorySlot
@@ -27,6 +28,7 @@ class RouteHandler:
             config=runtime.get_config(),
             lucy_provider=self.lucyclient.lucy_provider,
         )
+        self.charfileingest = CharfileIngest(runtime.get_config())
 
         self.lucyclient.init_client()
         self.characterclient.init_client()
@@ -62,3 +64,8 @@ class RouteHandler:
             for char in charnames
         }
         return search_results
+
+    def character_upload(self, data: str) -> dict[str, str]:
+        """Parse character file, return filename/contents"""
+        ingest = self.charfileingest.process_webform(data)
+        return ingest if data else {}

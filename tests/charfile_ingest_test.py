@@ -2,8 +2,8 @@ from eqcharinfo.controllers import CharfileIngest
 
 EXPECTED_FILE = "Utske_cazic-Inventory - Copy.txt"
 
-MOCK_WEBFORM = open("tests/fixtures/mock_webform.txt", "r").read()
-MOCK_CHARFILE = open("tests/fixtures/mock_charfile.txt", "r").read()
+MOCK_WEBFORM = open("tests/fixtures/mock_webform.txt", "r").read().rstrip("\n")
+MOCK_CHARFILE = open("tests/fixtures/mock_charfile.txt", "r").read().rstrip("\n")
 
 
 def test_extract_filename_success(charfile_ingest: CharfileIngest) -> None:
@@ -39,3 +39,9 @@ def test_process_webform(charfile_ingest: CharfileIngest) -> None:
     result = charfile_ingest.process_webform(MOCK_WEBFORM)
     assert EXPECTED_FILE in result
     assert result[EXPECTED_FILE] == MOCK_CHARFILE
+
+
+def test_process_webform_error(charfile_ingest: CharfileIngest) -> None:
+    result = charfile_ingest.process_webform("Hello")
+    assert "error" in result
+    assert result["error"] == ""

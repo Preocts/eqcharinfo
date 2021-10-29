@@ -18,7 +18,7 @@ class CharfileIngest:
         filename = self.extract_filename(webform_content)
         context = self.extract_content(webform_content)
 
-        self._charfile = {filename: context} if filename and context else {}
+        self._charfile = {filename: context} if filename and context else {"error": ""}
         return self._charfile.copy()
 
     def extract_filename(self, webform_content: str) -> str:

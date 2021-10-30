@@ -1,3 +1,5 @@
+import os
+import tempfile
 from configparser import ConfigParser
 from typing import Generator
 from unittest.mock import patch
@@ -11,6 +13,17 @@ from eqcharinfo.controllers import LucyItemClient
 from eqcharinfo.providers import CharacterInventoryProvider
 from eqcharinfo.providers import LucyItemProvider
 from eqcharinfo.utils.runtime_loader import RuntimeLoader
+
+
+@pytest.fixture(scope="function", name="empty_filepath")
+def fixture_empty_filepath() -> Generator[str, None, None]:
+    """Builds and returns filepath to a closed, empty tempfile"""
+    try:
+        file_desc, path = tempfile.mkstemp()
+        os.close(file_desc)
+        yield path
+    finally:
+        os.remove(path)
 
 
 @pytest.fixture(scope="session", name="config")

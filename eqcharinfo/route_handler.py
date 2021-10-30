@@ -68,4 +68,8 @@ class RouteHandler:
     def character_upload(self, data: str) -> dict[str, str]:
         """Parse character file, return filename/contents"""
         ingest = self.charfileingest.process_webform(data)
+        if "error" not in ingest:
+            self.charfileingest.save_to_file()
+            # TODO: Find a more efficient way to handle reloading files, by name!
+            self.characterclient.init_client()
         return ingest if data else {}

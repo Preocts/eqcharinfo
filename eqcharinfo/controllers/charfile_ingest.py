@@ -21,7 +21,7 @@ class CharfileIngest:
         content = self.extract_content(webform_content)
         charfile = {"filename": filename, "content": content}
         self._charfile = charfile
-        return self._charfile.copy() if filename and content else {"error": ""}
+        return self._charfile.copy() if filename and content else {"error": "Invalid"}
 
     def extract_filename(self, webform_content: str) -> str:
         """Extract filename from webform, returns empty string on failure"""
@@ -42,8 +42,6 @@ class CharfileIngest:
 
     def save_to_file(self) -> bool:
         """Saves loaded charfile(s) to disk"""
-        if not self._charfile["filename"]:
-            return False
         try:
             with open(self.filepath / self._charfile["filename"], "w") as outfile:
                 outfile.write(self._charfile["content"])

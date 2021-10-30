@@ -12,6 +12,8 @@ there is a good chance you have found dead-code.
 To run dead-code scan:
     >>> make dead-code
 """
+from unittest.mock import patch
+
 from eqcharinfo import route_handler
 
 # Provide at least one fixtured character name
@@ -42,6 +44,7 @@ def test_character_upload_empty(routes: route_handler.RouteHandler) -> None:
     assert routes.character_upload("") == {}
 
 
-def test_character_upload_full(routes: route_handler.RouteHandler) -> None:
+def test_character_upload(routes: route_handler.RouteHandler) -> None:
     """Return something"""
-    assert routes.character_upload(MOCK_WEBFORM)
+    with patch.object(routes.charfileingest, "save_to_file"):
+        assert routes.character_upload(MOCK_WEBFORM)

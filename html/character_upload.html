@@ -13,9 +13,12 @@
         <input type="submit" id="submit" value="Upload Character" />
         <a href="/character_upload" id="reset_link">Reset</a>
     </form>
-    {% if data %}
+    {% if "error" in data %}
     <hr />
+    <p>File processing error: {{ data.error }}</p>
+    {% elif data %}
     <h1>{{ data.filename }}</h1>
+    <p>The following information has been saved to disk</p>
     <pre>{{ data.content }}</pre>
     {% endif %}
 </body>

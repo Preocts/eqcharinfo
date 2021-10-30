@@ -54,7 +54,7 @@ def test_process_webform(charfile_ingest: CharfileIngest) -> None:
 def test_process_webform_error(charfile_ingest: CharfileIngest) -> None:
     result = charfile_ingest.process_webform("Hello")
     assert "error" in result
-    assert result["error"] == ""
+    assert result["error"] == "Invalid"
 
 
 def test_save_file_empty_filename(charfile_ingest: CharfileIngest) -> None:

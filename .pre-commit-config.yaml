@@ -3,7 +3,7 @@ default_language_version:
 repos:
   # Batch of helpful formatters and patterns
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: "v4.3.0"
+    rev: "v4.4.0"
     hooks:
       - id: check-json
       - id: check-yaml
@@ -40,7 +40,7 @@ repos:
 
   # Flake8 for linting, line-length adjusted to match Black default
   - repo: https://github.com/PyCQA/flake8
-    rev: 5.0.4
+    rev: 6.0.0
     hooks:
       - id: flake8
         args: [--max-line-length, "88"]
